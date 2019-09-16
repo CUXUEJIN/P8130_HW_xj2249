@@ -65,7 +65,7 @@ tab1 <- summary(tab1,
         title = "Table1: Demographic and co-morbidities", 
         labelTranslations = labels_table1,
         text = T)
-write2html(tab1,"~/Desktop/tab1.html")
+write2html(tab1,"~/Desktop/CU_semester1/Courses/BIOSTATISTICAL METHODS I/P8130_HW_xj2249/tab1.html")
 ```
 
 
@@ -94,7 +94,7 @@ tab2 <- tableby( Group ~ Systolic_pre + Systolic_post + Sys_change +
 summary(tab2,title = "Table2: Pre/Post changes in metabolic parameters", 
         text = T)
 
-Δ
+??
 
 ```
 
