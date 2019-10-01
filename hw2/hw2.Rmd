@@ -1,0 +1,58 @@
+---
+title: "P8130_hw2"
+author: "xj2249"
+date: "2019/10/1"
+output: 
+  pdf_document:
+  latex_engine: xelatex
+---
+
+# Problem1
+## a)
+Let X denote the number of people who develop uveal melanoma in a given year.
+As we already know, X follows a binomial distribution as followed:
+$$
+X\thicksim B(8.5\times10^6,5\times10^{-6})
+$$
+Therefore
+$$
+P(X=30) = { 8.5\times10^6 \choose 30} (5\times10^{-6})^{30} (1-5\times10^{-6})^{ (8.5\times10^6-30)} = `r dbinom(30,8.5*10^6,5*10^(-6))`
+$$
+
+## b)
+The population of Asians, non-Hispanic Whites and Black are `r  8500000*c(0.14,0.428,24.3)`, 
+and therefore, $X_{Asians}$,$X_{non-Hispanic Whites}$ and $X_{Black}$ separately follow binomial distributions as followed: 
+\begin{gather*}
+X_{Asians}\thicksim B(1.19\times10^6,0.39\times10^{-6})\\
+X_{non-Hispanic Whites}\thicksim B(3.638\times10^6,6.02\times10^{-6})\\
+X_{Black}\thicksim B(2.0655\times10^6,0.31\times10^{-6})
+\end{gather*}
+
+Therefore
+$$
+P(X_{Asians}=30) = {1.19\times10^6 \choose 30} (0.39\times10^{-6})^{30} (1-0.39\times10^{-6})^{ (1.19\times10^6-30)} = `r dbinom(30,1.19*10^6,0.39*10^(-6))`
+$$ 
+$$
+P(X_{non-Hispanic Whites}=30) = {3.638\times10^6 \choose 30} (6.02\times10^{-6})^{30} (1-6.02\times10^{-6})^{ (3.638\times10^6-30)} = `r dbinom(30,3.638*10^6,6.02*10^(-6))`
+$$ 
+$$
+P(X_{Black}=30) = {2.0655\times10^6 \choose 30} (0.31\times10^{-6})^{30} (1-0.31\times10^{-6})^{ (2.0655\times10^6-30)} = `r dbinom(30,2.0655*10^6,0.31*10^(-6))`
+$$ 
+
+# Problem2
+## a)
+### Intervention Group
+The hypothesis is  
+$$
+H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
+$$
+With the significance level $\alpha=0.05 $, compute the test statistic:
+$$
+t = \frac{\bar{d}-0}{s_d/\sqrt{n}} = \frac{-0.76}{1.44/\sqrt{36}}= -0.08796
+$$
+
+```{r,include = FALSE}
+
+
+```
+

@@ -1,0 +1,79 @@
+---
+title: "rec4"
+author: "jx"
+date: "2019/9/29"
+output: html_document
+---
+
+# Problem 1
+
+```{r}
+before <- c(102.7,103.5,102.2,103.0,101.2,100.4,101.8,103.1,102.5,101.7,102.1,101.3)
+after <- c(99.0,100.3,101.0,100.9,99.6,99.9,100.2,100.0,100.3,100.3,101.5,100.2)
+d <- before - after
+mean(d)
+var(d)
+sd(d)
+z0 <- mean(d)/(sd(d)*sqrt(12))
+z1 <- (mean(d) - 1)/(sd(d)*sqrt(12))
+ <- (mean(d) - 2)/(sd(d)*sqrt(12))
+```
+
+# Problem 2
+```{r}
+qt(0.975,df = 19)
+7/(qt(0.975,df = 19))
+-1/(7/(qt(0.975,df = 19)))
+
+qt(0.975,df = 98)
+```
+
+```{r}
+dbinom(30,8.5*10^6,5*10^(-6))
+8.5*c(0.14,0.428,0.243)
+dbinom(30,8.5*10^6,5*10^(-6))
+dbinom(30,3.638*10^6,6.02*10^(-6))
+dbinom(30,2.0655*10^6,0.31*10^(-6))
+qt(0.975,35)
+qf(0.975,35,35)
+qt(0.975,70)
+(-0.76-0.28)/(sqrt(2.41/2)*sqrt(1/18))
+1-pbinom(9,20,0.6)
+```
+
+```{r,results='asis'}
+library(tidyverse)
+?sleep
+str(sleep )
+sd(filter(sleep,group == "1")$extra)
+sd(filter(sleep,group == "2")$extra)     
+
+shapiro.test(filter(sleep,group == "1")$extra)
+shapiro.test(filter(sleep,group == "2")$extra)
+
+bartlett.test(extra ~ group,data = sleep)
+
+t.test(extra ~ group,data = sleep, var.equal =TRUE, alternative = "less")
+
+t.test(filter(sleep,group == "2")$extra)
+
+sleep %>%  
+        ggplot(aes(x=extra,fill = group)) +
+        geom_histogram(alpha = 0.5)
+library(car)
+leveneTest()
+
+
+
+sleep %>% 
+        group_by(group) %>% 
+        summarise(mean(extra),sd(extra))
+1.79^2+2.00^2
+sd(filter(sleep,group == "1")$extra)^2 + sd(filter(sleep,group == "2")$extra)^2 
+(2.33 - 0.75)/(sqrt(7.209556/2)*sqrt(0.2))
+(2.33 - 0.75)/(sqrt(7.2041/2)*sqrt(0.2))
+qt(0.975,9)
+
+
+```
+

@@ -2,7 +2,8 @@
 title: "hw1_xj2249"
 author: "jx"
 date: "2019/9/14"
-output: html_document
+output: word_document
+
 ---
 
 ```{r ,message = FALSE}
@@ -10,8 +11,7 @@ output: html_document
 # library packages
 library(readxl)
 library(arsenal)
-library(dplyr)
-library(tidyr)
+library(tidyverse)
 
 # Input data
 p1_data <- read_excel("~/Desktop/CU_semester1/Courses/BIOSTATISTICAL METHODS I/hw/HW 1/Exercise.xlsx",skip = 1)
@@ -33,10 +33,10 @@ p1_data <- rename(p1_data,
 # Convert character variables into factor variables. 
 p1_data$Group <- factor(p1_data$Group,labels = c("Control","Intervention"))
 p1_data$Gender <- factor(p1_data$Gender,labels = c("Male","Female"))
+
 # Reclassify race and name it "Race2"
-p1_data <- 
-        p1_data %>% 
-        mutate(Race2 = factor(
+p1_data <- p1_data %>% 
+           mutate(Race2 = factor(
                 ifelse(p1_data$Race == "1" | p1_data$Race == "3",
                        "African American","Hispanic")))
 
@@ -46,12 +46,14 @@ p1_data$Smokes <- factor(p1_data$Smokes,labels = c("No","Yes"))
 p1_data$HTN <- factor(p1_data$HTN,labels = c("No","Yes"))
 p1_data$T2DM <- factor(p1_data$T2DM,labels = c("No","Yes"))
 
+
 # Create table1
 control_table1 <- tableby.control(
         total = FALSE,
         test = FALSE,
         numeric.stats = c("meansd","medianq1q3"),
         stats.labels = list(meansd = "Mean (SD)",medianq1q3 = "Median (Q1, Q3)"),
+        digits = 2
         ) 
 
 labels_table1 <- list(Age = "Age(yrs)", Gender = "Gender,(n%)", Race2 = "Race,(n%)",
@@ -76,6 +78,7 @@ control_table2 <- tableby.control(
         test = FALSE,
         numeric.stats = c("meansd","medianq1q3"),
         stats.labels = list(meansd = "Mean (SD)",medianq1q3 = "Median (Q1, Q3)"),
+        digits = 2
         ) 
 
 tab2 <- tableby( Group ~ Systolic_pre + Systolic_post + Sys_change + 
@@ -94,14 +97,11 @@ tab2 <- tableby( Group ~ Systolic_pre + Systolic_post + Sys_change +
 summary(tab2,title = "Table2: Pre/Post changes in metabolic parameters", 
         text = T)
 
-??
 
 ```
 
 ```{r, message = FALSE}
 # Create graphs
-library(ggplot2)
-library(stringr)
 
 data2 <- p1_data %>%
          gather(key = SYSTOLIC , value = Systolic,'Systolic_pre','Systolic_post') %>% 
@@ -110,20 +110,6 @@ data2 <- p1_data %>%
          gather(key = HDL , value = hdl,'HDL_pre','HDL_post') %>% 
          gather(key = LDL , value = ldl,'LDL_pre','LDL_post') %>% 
          gather(key = GLU , value = glu,'Glu_pre','Glu_post') 
-
-control_table3 <- tableby.control(
-        total = FALSE,
-        test = FALSE,
-        numeric.stats = c("meansd","medianq1q3"),
-        stats.labels = list(meansd = "Mean (SD)",medianq1q3 = "Median (Q1, Q3)"),
-        ) 
-
-tab3 <- tableby( interaction(Group,BMI) ~ bmi ,
-                 control = control_table3,
-                 data = data2)
-tab3 <- summary(tab3, text = T)
-
-write2html(tab3,"~/Desktop/tab3.html")
 
 data2 %>% 
         ggplot(aes(x = Group, y = bmi, fill = factor(BMI,levels = c('BMI_pre','BMI_post')))) + 

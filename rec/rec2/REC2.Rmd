@@ -1,0 +1,63 @@
+---
+title: "REC2"
+author: "jx"
+date: "2019/9/16"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r,message = FALSE}
+library(tidyverse)
+library(pROC)
+library(ggplot2)
+
+D_df <- tibble( answer_yes = rep(0:7,c(0,1,5,7,11,20,30,34)),
+              status = factor(rep("D",108))
+              )
+ND_df <- tibble( answer_yes = rep(0:7,c(3,4,2,5,2,0,1,1)),
+                 status = factor(rep("ND",18))
+               )
+df <- rbind(D_df,ND_df)
+
+
+
+D_df <- tibble( answer_yes = rep(0:7,c(0,1,5,7,11,20,30,34)),
+              status = rep(1,108))
+         
+ND_df <- tibble( answer_yes = rep(0:7,c(3,4,2,5,2,0,1,1)),
+                 status = rep(0,18))
+               
+df <- rbind(D_df,ND_df)
+view(df)
+df$status <- as.factor(df$status)
+
+str(df$status)
+table(df$status)
+
+result <- roc(df$status,df$answer_yes)
+summary(result)
+result
+
+plot(result)
+
+Yuden <- result$sensitivities + result$specificities - 1
+Yuden
+cutoff <- result$thresholds[Yuden == max(Yuden)]
+cutoff 
+result$sensitivities[Yuden == max(Yuden)]
+result$specificities[Yuden == max(Yuden)]
+
+str(df)
+library(plotROC)
+df %>% 
+        ggplot(aes(d = status, m = answer_yes)) + 
+        geom_roc()
+
+cutoff2 <- result$thresholds[result$sensitivities >= 0.7 & result$specificities >= 0.7]
+cutoff2
+
+# shiny_plotROC() ï¼?ï¼?ï¼? 
+
+```
+

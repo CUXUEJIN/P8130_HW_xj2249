@@ -1,0 +1,131 @@
+---
+title: "hw1_xj2249"
+author: "jx"
+date: "2019/9/14"
+output: html_document
+
+---
+
+```{r ,message = FALSE}
+
+# library packages
+library(readxl)
+library(arsenal)
+library(tidyverse)
+
+# Input data
+p1_data <- read_excel("~/Desktop/CU_semester1/Courses/BIOSTATISTICAL METHODS I/hw/HW 1/Exercise.xlsx",skip = 1)
+# rename some variables
+p1_data <- rename(p1_data,
+                  Systolic_pre = PRE...9,
+                  Systolic_post = POST...10,
+                  Diastolic_pre = PRE...11,
+                  Diastolic_post = POST...12,
+                  BMI_pre = PRE...13,
+                  BMI_post = POST...14,
+                  HDL_pre =  PRE...15,
+                  HDL_post = POST...16,
+                  LDL_pre =  PRE...17,
+                  LDL_post = POST...18,
+                  Glu_pre =  PRE...19,
+                  Glu_post = POST...20)
+
+# Convert character variables into factor variables. 
+p1_data$Group <- factor(p1_data$Group,labels = c("Control","Intervention"))
+p1_data$Gender <- factor(p1_data$Gender,labels = c("Male","Female"))
+
+# Reclassify race and name it "Race2"
+p1_data <- p1_data %>% 
+           mutate(Race2 = factor(
+                ifelse(p1_data$Race == "1" | p1_data$Race == "3",
+                       "African American","Hispanic")))
+
+# no Caucasian or Other races in this dataset.
+p1_data$Depression <- factor(p1_data$Depression,labels = c("No","Yes"))
+p1_data$Smokes <- factor(p1_data$Smokes,labels = c("No","Yes"))
+p1_data$HTN <- factor(p1_data$HTN,labels = c("No","Yes"))
+p1_data$T2DM <- factor(p1_data$T2DM,labels = c("No","Yes"))
+
+
+# Create table1
+control_table1 <- tableby.control(
+        total = FALSE,
+        test = FALSE,
+        numeric.stats = c("meansd","medianq1q3"),
+        stats.labels = list(meansd = "Mean (SD)",medianq1q3 = "Median (Q1, Q3)"),
+        digits = 2
+        ) 
+
+labels_table1 <- list(Age = "Age(yrs)", Gender = "Gender,(n%)", Race2 = "Race,(n%)",
+                      Depression = "Depression,(n%)", Smokes = "Smoking,(n%)",
+                      HTN = "HTN,(n%)", T2DM = "T2DM,(n%)")
+
+tab1 <- tableby( Group ~ Age + Gender + Race2 + Depression + Smokes + HTN + T2DM ,
+                  control = control_table1,
+                  data = p1_data)
+tab1 <- summary(tab1,
+        title = "Table1: Demographic and co-morbidities", 
+        labelTranslations = labels_table1,
+        text = T)
+write2html(tab1,"~/Desktop/CU_semester1/Courses/BIOSTATISTICAL METHODS I/P8130_HW_xj2249/tab1.html")
+```
+
+
+```{r}
+# Create table2
+control_table2 <- tableby.control(
+        total = FALSE,
+        test = FALSE,
+        numeric.stats = c("meansd","medianq1q3"),
+        stats.labels = list(meansd = "Mean (SD)",medianq1q3 = "Median (Q1, Q3)"),
+        digits = 2
+        ) 
+
+tab2 <- tableby( Group ~ Systolic_pre + Systolic_post + Sys_change + 
+                         BMI_pre + BMI_post + BMI_change +
+                         HDL_pre + HDL_post + HDL_change +
+                         LDL_pre + LDL_post + LDL_change +
+                         Glu_pre + Glu_post + Glu_change,
+                 control = control_table2,
+                 data = mutate(p1_data,
+                               Sys_change = Systolic_post - Systolic_pre,
+                               BMI_change = BMI_post - BMI_pre,
+                               HDL_change = HDL_post - HDL_pre,
+                               LDL_change = LDL_post - LDL_pre,
+                               Glu_change = Glu_post - Glu_pre)
+                        )
+summary(tab2,title = "Table2: Pre/Post changes in metabolic parameters", 
+        text = T)
+
+
+```
+
+```{r, message = FALSE}
+# Create graphs
+
+data2 <- p1_data %>%
+         gather(key = SYSTOLIC , value = Systolic,'Systolic_pre','Systolic_post') %>% 
+         gather(key = DIASTOLIC , value = Diastolic,'Diastolic_pre','Diastolic_post') %>% 
+         gather(key = BMI , value = bmi,'BMI_pre','BMI_post') %>% 
+         gather(key = HDL , value = hdl,'HDL_pre','HDL_post') %>% 
+         gather(key = LDL , value = ldl,'LDL_pre','LDL_post') %>% 
+         gather(key = GLU , value = glu,'Glu_pre','Glu_post') 
+
+data2 %>% 
+        ggplot(aes(x = Group, y = bmi, fill = factor(BMI,levels = c('BMI_pre','BMI_post')))) + 
+        geom_boxplot() + 
+        scale_fill_discrete(labels = c("Pre-measurement", "Post-measurement")) + 
+        labs(title = "Change of BMI before and after treatment between groups",y = "BMI" ,fill = "")
+
+data2 %>% 
+        ggplot(aes(x = Group, y = ldl, fill = factor(LDL,levels = c('LDL_pre','LDL_post')))) + 
+        geom_boxplot() + 
+        scale_fill_discrete(labels = c("Pre-measurement", "Post-measurement")) + 
+        labs(title = "Change of LDL before and after treatment between groups",y = "LDL" ,fill = "")
+
+
+
+
+```
+
+
