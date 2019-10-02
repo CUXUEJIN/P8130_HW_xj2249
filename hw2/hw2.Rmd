@@ -42,17 +42,214 @@ $$
 # Problem2
 ## a)
 ### Intervention Group
-The hypothesis is  
+The hypothesis is:
 $$
 H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
 $$
-With the significance level $\alpha=0.05 $, compute the test statistic:
+With the significance level $\alpha=0.05$, compute the test statistic: 
 $$
-t = \frac{\bar{d}-0}{s_d/\sqrt{n}} = \frac{-0.76}{1.44/\sqrt{36}}= -0.08796
+t_{stats} = \frac{\bar{d}-0}{s_d/\sqrt{n}} = \frac{-0.76}{1.44/\sqrt{36}}=-3.17
 $$
+Because $|t_{stats}|=3.17 > t_{35,0.975} = `r round(qt(0.975,35),digits=2)`$, at 5% significance level, we reject $H_0$ and conclude that there's a difference of BMI between 6-months follow-up and baseline among intervention group.
 
-```{r,include = FALSE}
+### Control Group
+The hypothesis is: 
+$$
+H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
+$$
+With the significance level $\alpha=0.05$, compute the test statistic:
+$$
+t_{stats} = \frac{\bar{d}-0}{s_d/\sqrt{n}} = \frac{0.28}{0.97/\sqrt{36}}=1.73 
+$$
+Because $|t_{stats}|=1.73 < t_{35,0.975} = `r round(qt(0.975,35),digits=2)`$, at 5% significance level, we fail to reject $H_0$ and conclude that there's no enough evidence to support a difference of BMI between 6-months follow-up and baseline among control group.
 
+## b) 
+Now perform a test to compare the BMI absolute changes between the two groups.
+### Test for Equality of Variances
+The hypothesis is:
+$$
+H_0:\sigma_1 = \sigma_2  \quad vs \quad H_1:\sigma_1 \neq \sigma_2  
+$$
+With the significance level $\alpha=0.05$, compute the test statistic:
+$$
+F_{stats} = \frac{s_1^2}{s_2^2} = \frac{1.44^2}{0.97^2}=2.204 \thicksim F_{35,35} 
+$$
+Because $F_{stats}=2.204 > F_{35,35,0.975}= `r round(qf(0.975,35,35),digits=3)`$ , at 5% significance level, we reject $H_0$ and conclude that there's a difference of variances of BMI change between intervention and control group. 
+
+### Two-Sample Independent t-test with Unequal Variances
+$$
+H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
+$$
+With the significance level $\alpha=0.05$, compute the test statistic:
+$$
+t_{stats} = \frac{\bar{X_1}-\bar{X_2}}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}} = \frac{-0.76-0.28}
+{\sqrt{\frac{1.44^2}{36}+\frac{0.97^2}{36}}}= 3.594
+$$
+$$
+d'=\frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{(\frac{s_1^2}{n_1})^2/(n_1-1)+(\frac{s_2^2}{n_1})^2/(n_2-1)} = \frac{(\frac{1.44^2}{36}+\frac{0.97^2}{36})^2}{(\frac{1.44^2}{36})^2/(36-1)+(\frac{0.97^2}{36})^2/(36-1)}= 61.340 = 61
+$$
+Because $t_{stats}= 3.594 > t_{61,0.975} = `r round(qt(0.975,61),digits=3)`$, at 5% significance level, we reject $H_0$ and conclude that there's a difference of BMI change between intervention and control group.
+
+```{r, include = FALSE}
+library(tidyverse)
+df <- readxl::read_excel("./Exercise.xlsx",skip = 1) %>% 
+        janitor::clean_names() %>% 
+        rename(bmi_pre = pre_13,
+               bmi_post = post_14
+               ) %>% 
+        select(bmi_pre,
+               bmi_post,
+               group
+               ) %>% 
+        mutate(group = factor(group,labels = c("Control","Intervention")),
+               change = bmi_post - bmi_pre)
+
+int_group <- filter(df,group == "Intervention")
+ctr_group <- filter(df,group == "Control")
+
+#P2_a conduct paired t-test 
+t.test(int_group$bmi_post,int_group$bmi_pre, paired = T)
+t.test(ctr_group$bmi_post,ctr_group$bmi_pre, paired = T)
+
+#P2_b
+## Test for variance
+var.test(change~group, data = df)  # why the results are diff.!!!???
+var.test(int_group$change,ctr_group$change)
+
+##conduct Two-Sample Independent t-test with Equal Variances
+t.test(change~group,data = df, var.equal = FALSE)  # the results are the same.
+t.test(int_group$change,ctr_group$change,var.equal = FALSE)
 
 ```
 
+## c) 
+The assumption is that the distribution of BMI is normal.  
+
+### i) Check the normality
+```{r,echo=FALSE}
+df %>% 
+  pivot_longer(starts_with("bmi"),
+               names_to = "time",
+               values_to = "bmi") %>%
+  mutate( time = recode(time,
+                        bmi_pre = "baseline",
+                        bmi_post = "6 months follow-up"),
+          time = factor(time, levels = c("baseline","6 months follow-up"))
+          ) %>% 
+  ggplot(aes(x = bmi,fill = group)) +
+  geom_density(alpha = .5) +
+  facet_grid(time~.) +
+  labs(title = "Distribution  of BMI at baseline and after 6 months" , x = "BMI" ) +
+  theme(legend.position = "bottom", legend.title = element_blank(), plot.title = element_text(hjust = 0.5))
+```
+As we can see in the plot above, the distribution of BMI is right-skewed. In another word, the normality assumption is (very likely) invalid.  
+
+### ii) Effect of non-normality and remedies
+Our tests are based on the normality assumption, which decide the underlying distribution of BMI. Therefore, non-normality invalidate our tests and may distort the truth. 
+Fortunately, we do have alternatives,such as **Non-parametric test** and **Transformation**.
+
+# Problem3
+Let X denote the number of restaurants that close by the end of 2019. As we know, 
+$$
+X\thicksim B(20,0.60)
+$$
+Therefore, use exact method:
+$$
+P(X \ge 10) = 1- P(X < 10) = 1- F(9) = `r round(1-pbinom(9,20,0.6),digits =3)`
+$$
+
+* Poisson approximation: since n=20 is not large and p=0.60 is not small, it's inappropriate to use poisson approximation to binomial. 
+* Normal approximation: since n(1-p) = 8 < 10, it's also inappropriate use normal approximation.
+* According to the result, the probability that more than 10 restaurants will close by the end of 2019 is 87.2%.
+
+# Problem4
+## a)
+### Test for normality 
+According to *Shapiro-Wilk test*, the distributions of increase of sleep (in hours) in both 
+group are normal. 
+```{r, include = FALSE}
+shapiro.test(filter(sleep,group == "1")$extra)
+shapiro.test(filter(sleep,group == "2")$extra)
+```
+
+### Test for Equality of Variances
+The hypothesis is:
+$$
+H_0:\sigma_1 = \sigma_2  \quad vs \quad H_1:\sigma_1 \neq \sigma_2  
+$$
+With the significance level $\alpha=0.05$, compute the test statistic:
+$$
+F_{stats} = \frac{s_1^2}{s_2^2} = \frac{3.20}{4.01}=0.798 \thicksim F_{9,9}
+$$
+Because $F_{9,9,0.025}= `r round(qf(0.025,9,9),digits=3)` < F_{stats}=0.798 < F_{9,9,0.975}= `r round(qf(0.975,9,9),digits=3)`$, at 5% significance level, we fail to reject $H_0$ and conclude that there's no enough evidence to support a difference of variances of sleep time increase between groups. 
+
+```{r, include = FALSE}
+# calculate mean and var
+sleep %>% 
+  group_by(group) %>% 
+  summarise(var(extra),mean(extra))
+# variance test
+var.test(extra~group,data = sleep)
+```
+
+### Two-Sample Independent t-test with Equal Variances
+$$
+H_0:\mu_{drug1} = \mu_{drug1}  \quad vs \quad H_1:\mu_{drug1} <  \mu_{drug2}  
+$$
+With the significance level $\alpha=0.05$, compute the test statistic:
+$$
+t_{stats} = \frac{\bar{X_1}-\bar{X_2}}{s\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}} = \frac{0.75-2.33}
+{\sqrt{3.605(\frac{1}{10}+\frac{1}{10})}}= -1.861
+$$
+$$
+s^2 = \frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{(n_1+n_2-2)} = \frac{(10-1)\times3.20+(10-1)\times4.01}{(10+10-2)}= 3.605
+$$
+Because $t_{stats}= -1.861 < t_{18,1-0.95} = `r round(qt(0.05,61),digits=3)`$, at 5% significance level, we reject $H_0$ and conclude drug2 has a better efficacy than drug1 in increasing sleep time.
+```{r,include = FALSE}
+t.test(extra~group,data = sleep,var.equal = TRUE,  alternative = "less")
+```
+
+## b)
+According to the formula
+$$
+95 \% CI = (\bar{X}-t_{1-0.05/2,9}S/\sqrt{n},\bar{X}+t_{1-0.05/2,9}S/\sqrt{n})
+$$
+* For drug1:
+
+$$
+95 \% CI_{drug1} = (0.75-`r round(qt(0.975,9),digits = 2)` \times 1.79/\sqrt{10},0.75+ `r round(qt(0.975,9),digits = 2)`\times 1.79/\sqrt{10})\\
+=(-0.529,2.029)
+$$
+* For drug2:
+
+$$
+95 \% CI_{drug2} = (2.33-`r round(qt(0.975,9),digits = 2)` \times 2.00/\sqrt{10},2.33+ `r round(qt(0.975,9),digits = 2)`\times 2.00/\sqrt{10})\\
+=(0.898,3.762)
+$$
+```{r,include = FALSE}
+# calculate CIs
+t.test(filter(sleep,group == "1")$extra, mu = 0)
+t.test(filter(sleep,group == "2")$extra, mu = 0)
+```
+
+## c)
+According to the formula
+$$
+Power = \Phi(Z_\alpha+ \frac{|\Delta|}{\sigma/ \sqrt{n}}) = 
+\Phi(-1.64+ \frac{1.58}{\sqrt{3.605}/\sqrt{10}}) = 0.839
+$$
+
+* The posterior power is 0.839, meaning 
+
+```{r,include = FALSE}
+power.t.test(10 ,delta = 2.33 - 0.75,sd = sqrt(3.605), alternative = "one.sided",type = "one.sample") ### diff???
+```
+
+## d) PROs and CONs of using a posteriori/post-hoc power analysis 
+
+* PROs: When the test result of a difference turns out to be non-significant, using a 
+posteriori/post-hoc power analysis helps us to interpret the result. 
+For instance, if the difference is true, but the power is not enough high, then we will get 
+a non-significant difference, which is actually due to insufficient power to detect rather than no true difference.
+
+* CONs:
