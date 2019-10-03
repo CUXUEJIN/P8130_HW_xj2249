@@ -10,41 +10,48 @@ output:
 # Problem1
 ## a)
 Let X denote the number of people who develop uveal melanoma in a given year.
-As we already know, X follows a binomial distribution as followed:
+Since n is very large and p is small, X follows a poisson distribution as followed:
 $$
-X\thicksim B(8.5\times10^6,5\times10^{-6})
+X\thicksim Poi(42.5),  \quad \lambda = 42.5
 $$
+
 Therefore
 $$
-P(X=30) = { 8.5\times10^6 \choose 30} (5\times10^{-6})^{30} (1-5\times10^{-6})^{ (8.5\times10^6-30)} = `r dbinom(30,8.5*10^6,5*10^(-6))`
+P(X=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{42.5^{30}e^{-42.5}}{30!} = `r dpois(30,42.5)` \approx0.009
 $$
 
 ## b)
 The population of Asians, non-Hispanic Whites and Black are `r  8500000*c(0.14,0.428,24.3)`, 
-and therefore, $X_{Asians}$,$X_{non-Hispanic Whites}$ and $X_{Black}$ separately follow binomial distributions as followed: 
+and therefore, $X_{Asians}$,$X_{non-Hispanic Whites}$ and $X_{Black}$ separately follow poisson distributions as followed: 
 \begin{gather*}
-X_{Asians}\thicksim B(1.19\times10^6,0.39\times10^{-6})\\
-X_{non-Hispanic Whites}\thicksim B(3.638\times10^6,6.02\times10^{-6})\\
-X_{Black}\thicksim B(2.0655\times10^6,0.31\times10^{-6})
+X_{Asians}\thicksim Poi(0.464)\\
+X_{non-Hispanic Whites}\thicksim Poi(21.901)\\
+X_{Black}\thicksim Poi(0.640)
 \end{gather*}
 
 Therefore
 $$
-P(X_{Asians}=30) = {1.19\times10^6 \choose 30} (0.39\times10^{-6})^{30} (1-0.39\times10^{-6})^{ (1.19\times10^6-30)} = `r dbinom(30,1.19*10^6,0.39*10^(-6))`
+P(X_{Asians}=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{0.464^{30}e^{0.464}}{30!} = `r dpois(30,0.464)`\approx2.346 \times 10^{-43}
 $$ 
+
+
 $$
-P(X_{non-Hispanic Whites}=30) = {3.638\times10^6 \choose 30} (6.02\times10^{-6})^{30} (1-6.02\times10^{-6})^{ (3.638\times10^6-30)} = `r dbinom(30,3.638*10^6,6.02*10^(-6))`
+P(X_{non-Hispanic Whites}=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{21.901^{30}e^{21.901}}{30!} = `r dpois(30,21.901)`\approx0.019
 $$ 
+
+
 $$
-P(X_{Black}=30) = {2.0655\times10^6 \choose 30} (0.31\times10^{-6})^{30} (1-0.31\times10^{-6})^{ (2.0655\times10^6-30)} = `r dbinom(30,2.0655*10^6,0.31*10^(-6))`
-$$ 
+P(X_{Black}=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{64.031^{30}e^{64.031}}{30!} = `r dpois(30,0.640)`\approx3.046 \times 10^{-39}
+$$
+
+As the result shows, a disparity (between the probability of exactly 30 uveal melanoma cases occurring in a given year) exists for different racial/ethnic groups. The non-Hispanic whites have the highest probability of 0.019, followed by Blacks and Asians, which have rather low probability.
 
 # Problem2
 ## a)
 ### Intervention Group
 The hypothesis is:
 $$
-H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
+H_0:\mu_1 - \mu_2=0  \quad vs \quad H_1:\mu_1-\mu_2   \neq 0 
 $$
 With the significance level $\alpha=0.05$, compute the test statistic: 
 $$
@@ -55,7 +62,7 @@ Because $|t_{stats}|=3.17 > t_{35,0.975} = `r round(qt(0.975,35),digits=2)`$, at
 ### Control Group
 The hypothesis is: 
 $$
-H_0:\mu_1 = \mu_2  \quad vs \quad H_1:\mu_1 \neq \mu_2  
+H_0:\mu_1 - \mu_2=0  \quad vs \quad H_1:\mu_1-\mu_2   \neq 0
 $$
 With the significance level $\alpha=0.05$, compute the test statistic:
 $$
@@ -65,6 +72,7 @@ Because $|t_{stats}|=1.73 < t_{35,0.975} = `r round(qt(0.975,35),digits=2)`$, at
 
 ## b) 
 Now perform a test to compare the BMI absolute changes between the two groups.
+
 ### Test for Equality of Variances
 The hypothesis is:
 $$
@@ -146,7 +154,7 @@ As we can see in the plot above, the distribution of BMI is right-skewed. In ano
 
 ### ii) Effect of non-normality and remedies
 Our tests are based on the normality assumption, which decide the underlying distribution of BMI. Therefore, non-normality invalidate our tests and may distort the truth. 
-Fortunately, we do have alternatives,such as **Non-parametric test** and **Transformation**.
+Fortunately, we do have alternatives, such as **Non-parametric test** and **Transformation**.
 
 # Problem3
 Let X denote the number of restaurants that close by the end of 2019. As we know, 
@@ -164,92 +172,56 @@ $$
 
 # Problem4
 ## a)
-### Test for normality 
-According to *Shapiro-Wilk test*, the distributions of increase of sleep (in hours) in both 
-group are normal. 
-```{r, include = FALSE}
-shapiro.test(filter(sleep,group == "1")$extra)
-shapiro.test(filter(sleep,group == "2")$extra)
-```
-
-### Test for Equality of Variances
-The hypothesis is:
+### Paired t-test with Equal Variances
 $$
-H_0:\sigma_1 = \sigma_2  \quad vs \quad H_1:\sigma_1 \neq \sigma_2  
+H_0:\mu_{drug1} -\mu_{drug1}=0  \quad vs \quad H_1:\mu_{drug1} -  \mu_{drug2}  <0
 $$
 With the significance level $\alpha=0.05$, compute the test statistic:
 $$
-F_{stats} = \frac{s_1^2}{s_2^2} = \frac{3.20}{4.01}=0.798 \thicksim F_{9,9}
+t_{stats} = \frac{\bar{d}-0}{s_d/\sqrt{n}} = \frac{-1.58}{1.23/\sqrt{10}}= -4.062 
 $$
-Because $F_{9,9,0.025}= `r round(qf(0.025,9,9),digits=3)` < F_{stats}=0.798 < F_{9,9,0.975}= `r round(qf(0.975,9,9),digits=3)`$, at 5% significance level, we fail to reject $H_0$ and conclude that there's no enough evidence to support a difference of variances of sleep time increase between groups. 
+Because $t_{stats}=-4.06 < t_{9,0.05} = `r round(qt(0.05,9),digits=3)`$, at 5% significance level, we reject $H_0$ and conclude drug2 has a better efficacy than drug1 in increasing sleep time.
 
-```{r, include = FALSE}
-# calculate mean and var
-sleep %>% 
-  group_by(group) %>% 
-  summarise(var(extra),mean(extra))
-# variance test
-var.test(extra~group,data = sleep)
-```
-
-### Two-Sample Independent t-test with Equal Variances
-$$
-H_0:\mu_{drug1} = \mu_{drug1}  \quad vs \quad H_1:\mu_{drug1} <  \mu_{drug2}  
-$$
-With the significance level $\alpha=0.05$, compute the test statistic:
-$$
-t_{stats} = \frac{\bar{X_1}-\bar{X_2}}{s\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}} = \frac{0.75-2.33}
-{\sqrt{3.605(\frac{1}{10}+\frac{1}{10})}}= -1.861
-$$
-$$
-s^2 = \frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{(n_1+n_2-2)} = \frac{(10-1)\times3.20+(10-1)\times4.01}{(10+10-2)}= 3.605
-$$
-Because $t_{stats}= -1.861 < t_{18,1-0.95} = `r round(qt(0.05,61),digits=3)`$, at 5% significance level, we reject $H_0$ and conclude drug2 has a better efficacy than drug1 in increasing sleep time.
 ```{r,include = FALSE}
-t.test(extra~group,data = sleep,var.equal = TRUE,  alternative = "less")
+df4 <- 
+        sleep %>%
+        pivot_wider(
+                names_from = group,
+                values_from = extra
+        ) %>% 
+        mutate(change = `1` - `2`)
+t.test(df4$`1`,df4$`2`,alternative = "less",paired = TRUE)
+t.test(df4$change,alternative = "less",mu = 0)
+
 ```
 
 ## b)
 According to the formula
 $$
-95 \% CI = (\bar{X}-t_{1-0.05/2,9}S/\sqrt{n},\bar{X}+t_{1-0.05/2,9}S/\sqrt{n})
+95 \% CI = (-\infty,\bar{d}+t_{1-0.05,9}S/\sqrt{n})
 $$
-* For drug1:
-
 $$
-95 \% CI_{drug1} = (0.75-`r round(qt(0.975,9),digits = 2)` \times 1.79/\sqrt{10},0.75+ `r round(qt(0.975,9),digits = 2)`\times 1.79/\sqrt{10})\\
-=(-0.529,2.029)
+95 \% CI = (-\infty,-1.58+1.833\times 1.230/\sqrt{10}) =(-\infty,-0.867)
 $$
-* For drug2:
-
-$$
-95 \% CI_{drug2} = (2.33-`r round(qt(0.975,9),digits = 2)` \times 2.00/\sqrt{10},2.33+ `r round(qt(0.975,9),digits = 2)`\times 2.00/\sqrt{10})\\
-=(0.898,3.762)
-$$
-```{r,include = FALSE}
-# calculate CIs
-t.test(filter(sleep,group == "1")$extra, mu = 0)
-t.test(filter(sleep,group == "2")$extra, mu = 0)
-```
 
 ## c)
 According to the formula
 $$
 Power = \Phi(Z_\alpha+ \frac{|\Delta|}{\sigma/ \sqrt{n}}) = 
-\Phi(-1.64+ \frac{1.58}{\sqrt{3.605}/\sqrt{10}}) = 0.839
+\Phi(-1.64+ \frac{1.58}{1.230/\sqrt{10}}) = 0.992
 $$
 
-* The posterior power is 0.839, meaning 
+* The posterior power is 0.992, meaning that if there's anything significant, the probability that we can detect it is 99.2%.
 
 ```{r,include = FALSE}
-power.t.test(10 ,delta = 2.33 - 0.75,sd = sqrt(3.605), alternative = "one.sided",type = "one.sample") ### diff???
+power.t.test(10 ,delta = 1.58/1.230,sd = 1.230, alternative = "one.sided",type = "one.sample") ### diff???
 ```
 
 ## d) PROs and CONs of using a posteriori/post-hoc power analysis 
 
-* PROs: When the test result of a difference turns out to be non-significant, using a 
-posteriori/post-hoc power analysis helps us to interpret the result. 
-For instance, if the difference is true, but the power is not enough high, then we will get 
-a non-significant difference, which is actually due to insufficient power to detect rather than no true difference.
+* PROs: 
+When already having a fixed sample size, we can use posteriori power analysis before conducting the study to see
+whether or not such study would give us adequate power.
 
 * CONs:
+Post-hoc power analysis may been misused in interpreting nonsignificant study results, where there will be always a low power. As a result, an observed nonsignificant result may be misinterpreted as the study having inadequate power(underpowered to detect) but as a fact, the result may come from the true nonsignificance.
