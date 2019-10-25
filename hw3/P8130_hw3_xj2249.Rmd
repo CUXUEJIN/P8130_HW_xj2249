@@ -15,7 +15,7 @@ library(multcomp)
 ## a)
 ```{r}
 
-sur_df <- read_csv("./SurvCancer.csv") %>% 
+sur_df <- read_csv("./hw3/SurvCancer.csv") %>% 
         janitor::clean_names() %>% 
         mutate(organ = str_to_lower(organ),
                organ = factor(organ))
@@ -68,11 +68,13 @@ pander(sur_aov)
 pairwise.t.test(sur_df$survival, sur_df$organ, p.adj = 'bonferroni')  
 ```
 
-
 2) Tukey
 ```{r}
 TukeyHSD(sur_aov,conf.level = 0.99) ## 0.99???
 TukeyHSD(sur_aov,conf.level = 0.99) %>% plot()
+
+glht(sur_aov, linfct = mcp(organ = "Tukey")) %>% summary()
+glht(sur_aov, linfct = mcp(organ = "Tukey")) %>% plot()
 ```
 
 3) Dunnett Test
