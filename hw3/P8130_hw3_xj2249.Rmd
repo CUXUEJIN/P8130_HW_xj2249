@@ -1,0 +1,100 @@
+---
+title: "p8130_hw3_xj2249"
+author: "xj2249"
+date: "2019/10/24"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(pander)
+library(multcomp)
+```
+
+# Problem2
+## a)
+```{r}
+
+sur_df <- read_csv("./SurvCancer.csv") %>% 
+        janitor::clean_names() %>% 
+        mutate(organ = str_to_lower(organ),
+               organ = factor(organ))
+# boxplot
+sur_df %>% 
+        ggplot(aes( x =  organ, y = survival)) +
+        geom_boxplot()
+
+# descriptive statistics 
+sur_df %>% 
+        group_by(organ) %>% 
+        summarise( n = n(),
+                   mean = mean(survival),
+                   median = median(survival),
+                   sd = sd(survival),
+                   IQR = IQR(survival),
+                   min = min(survival),
+                   max = max(survival)
+                  ) %>% 
+        knitr::kable()
+```
+
+## b)
+Hypothesis:
+$$
+H_0:\mu_1=\mu_2=\mu_3=\mu_4=\mu_5 \quad vs \quad H_1: 
+\text{not all means are equal}
+$$
+Significance level:$\alpha = 0.01$   
+
+Assumptions:(1)Independence (2)equal variance (3)normality   
+
+Decision rule:
+Reject $H_0$: if $F_{stats} > F_{4,59,1-\alpha/2}= F_{4,59,0.995}=$ `r round(qf(0.995,4,59),digits =3)`
+Fail to reject $H_0$: if $F_{stats} < F_{4,59,0.995}$
+
+Interpretation:
+Since $F_{stats} = 6.433  > F_{4,59,1-\alpha/2}= F_{4,59,0.995}=$ `r round(qf(0.995,4,59),digits =3)`, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups.
+
+```{r}
+sur_aov <- aov(survival ~ organ, data = sur_df)
+
+pander(sur_aov)
+
+```
+
+## c) how to adjust 0.05 to 0.01
+1) Bonferroni
+```{r}
+pairwise.t.test(sur_df$survival, sur_df$organ, p.adj = 'bonferroni')  
+```
+
+
+2) Tukey
+```{r}
+TukeyHSD(sur_aov,conf.level = 0.99) ## 0.99???
+TukeyHSD(sur_aov,conf.level = 0.99) %>% plot()
+```
+
+3) Dunnett Test
+```{r}
+glht(sur_aov, linfct = mcp(organ = "Dunnett")) %>% summary()
+```
+
+## d) 
+i) check the normality assumption
+```{r}
+# first, try a hist/density plot.
+hist(residuals(sur_aov)) 
+
+# check the normality (of residuals) assumption
+qqnorm(residuals(sur_aov))
+
+```
+As the QQ-plot shows, the normality assumption is questionable. Therefore, we can  Kruskal Wallis test to fix the problem.  
+ii) KW test 
+```{r}
+kruskal.test(survival ~ organ, data = sur_df) %>% pander()
+```
+The p-value is 0.005, at a significance level 0.01, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups. The p-value of kw-test is 0.004798, much larger than that of the anova test(0.0002295), which shows that kw-test is harder to reject $H_0$ and it's more conservative and less powerful. 
+
+# Problem3

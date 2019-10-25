@@ -23,11 +23,18 @@ $$
 ## b)
 The population of Asians, non-Hispanic Whites and Black are `r  8500000*c(0.14,0.428,24.3)`, 
 and therefore, $X_{Asians}$,$X_{non-Hispanic Whites}$ and $X_{Black}$ separately follow poisson distributions as followed: 
+
 \begin{gather*}
 X_{Asians}\thicksim Poi(0.464)\\
 X_{non-Hispanic Whites}\thicksim Poi(21.901)\\
 X_{Black}\thicksim Poi(0.640)
 \end{gather*}
+
+$$
+X_{Asians}\thicksim Poi(0.464)\\
+X_{non-Hispanic Whites}\thicksim Poi(21.901)\\
+X_{Black}\thicksim Poi(0.640)
+$$
 
 Therefore
 $$
@@ -41,7 +48,7 @@ $$
 
 
 $$
-P(X_{Black}=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{64.031^{30}e^{64.031}}{30!} = `r dpois(30,0.640)`\approx3.046 \times 10^{-39}
+P(X_{Black}=30) = \frac{\lambda^xe^{- \lambda}}{x!} =  \frac{0.640^{30}e^{0.640}}{30!} = `r dpois(30,0.640)`\approx3.046 \times 10^{-39}
 $$
 
 As the result shows, a disparity (between the probability of exactly 30 uveal melanoma cases occurring in a given year) exists for different racial/ethnic groups. The non-Hispanic whites have the highest probability of 0.019, followed by Blacks and Asians, which have rather low probability.
@@ -167,7 +174,17 @@ P(X \ge 10) = 1- P(X < 10) = 1- F(9) = `r round(1-pbinom(9,20,0.6),digits =3)`
 $$
 
 * Poisson approximation: since n=20 is not large and p=0.60 is not small, it's inappropriate to use poisson approximation to binomial. 
-* Normal approximation: since n(1-p) = 8 < 10, it's also inappropriate use normal approximation.
+* Normal approximation: since np(1-p) = 4.8  $\approx$ 5, we may try to use normal approximation to binomial.
+
+$$
+X\thicksim  N(np,np(1-p)) =N(12,4.8)
+$$
+
+$$
+P(X \ge 10) = 1- P(X < 10)  = `r round(1-pnorm(9,12,sqrt(4.8)),digits =3)`
+$$
+
+* As we can see, when npq is not greater than 5, it may not be very appropriate to use normal distribution to binomial. 
 * According to the result, the probability that more than 10 restaurants will close by the end of 2019 is 87.2%.
 
 # Problem4
@@ -207,14 +224,14 @@ $$
 ## c)
 According to the formula
 $$
-Power = \Phi(Z_\alpha+ \frac{|\Delta|}{\sigma/ \sqrt{n}}) = 
-\Phi(-1.64+ \frac{1.58}{1.230/\sqrt{10}}) = 0.992
+Power = 1 -\beta = P(reject H_0|H_1) = F_t(t_\alpha+ \frac{|\Delta|}{\sigma/ \sqrt{n}}) = 
+F_t(-1.83+ \frac{1.58}{1.230/\sqrt{10}}) = 0.974
 $$
 
-* The posterior power is 0.992, meaning that if there's anything significant, the probability that we can detect it is 99.2%.
+* The posterior power is 0.974, meaning that if there's anything significant, the probability that we can detect it is 97.4%.
 
 ```{r,include = FALSE}
-power.t.test(10 ,delta = 1.58/1.230,sd = 1.230, alternative = "one.sided",type = "one.sample") ### diff???
+power.t.test(10 ,delta = 1.58/1.230, sd = 1.230, alternative = "one.sided",type = "one.sample") ### diff???
 ```
 
 ## d) PROs and CONs of using a posteriori/post-hoc power analysis 
