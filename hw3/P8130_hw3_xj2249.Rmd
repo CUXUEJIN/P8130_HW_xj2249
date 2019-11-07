@@ -4,85 +4,95 @@ author: "xj2249"
 date: "2019/10/24"
 output: pdf_document
 ---
-
+  
 ```{r setup, include=FALSE}
 library(tidyverse)
-library(pander)
 library(multcomp)
-```
+library(arsenal)
+library(kableExtra)
 
-# Problem2
-## a)
-```{r}
+theme_set(theme_minimal() +  theme(plot.title = element_text(hjust = 0.5)))
 
+
+setwd("/Users/xuejin/Desktop/CUMC_semester1/Courses/Biostatistics Methods I/P8130_hw_xj2249")
 sur_df <- read_csv("./hw3/SurvCancer.csv") %>% 
         janitor::clean_names() %>% 
         mutate(organ = str_to_lower(organ),
                organ = factor(organ))
-# boxplot
-sur_df %>% 
-        ggplot(aes( x =  organ, y = survival)) +
-        geom_boxplot()
-
-# descriptive statistics 
-sur_df %>% 
-        group_by(organ) %>% 
-        summarise( n = n(),
-                   mean = mean(survival),
-                   median = median(survival),
-                   sd = sd(survival),
-                   IQR = IQR(survival),
-                   min = min(survival),
-                   max = max(survival)
-                  ) %>% 
-        knitr::kable()
 ```
 
+# Problem2
+## a)
+```{r descriptive statistics and boxplot}
+# descriptive statistics 
+control_table1 <- tableby.control(
+        total = FALSE,
+        test = FALSE,
+        numeric.stats = c("meansd","medianq1q3","range"),
+        stats.labels = list(meansd = "Mean (SD)",
+                            medianq1q3 = "Median (Q1, Q3)",
+                            range = "Min - Max"),
+        digits = 2
+        ) 
+tab1 <- tableby(organ~survival,sur_df,control = control_table1)
+
+summary(tab1,text = TRUE) %>% kable(caption = "Descriptive statistics for each group") %>% kable_styling(latex_options = "scale_down")
+
+sur_df %>% 
+        ggplot(aes( x =  organ, y = survival , fill = organ)) +
+        geom_boxplot() + 
+        labs( y = "survival times (days)",
+              title = "survival times by group") 
+```
+
+As we can see, average survival time varies among different cancers. Breast cancer group has the largest mean and standard deviation value, followed by ovary, colon, stomach and bronchus cancer groups. 
+
 ## b)
-Hypothesis:
+```{r, echo = F}
+# Anova table
+sur_aov <- aov(survival ~ organ, data = sur_df)
+pander::pander(sur_aov)
+```
+
+1) Hypothesis:
 $$
 H_0:\mu_1=\mu_2=\mu_3=\mu_4=\mu_5 \quad vs \quad H_1: 
 \text{not all means are equal}
 $$
-Significance level:$\alpha = 0.01$   
+2) Significance level: $\alpha = 0.01$   
 
-Assumptions:(1)Independence (2)equal variance (3)normality   
+3) Assumptions:(i)Independence (ii)equal variances (iii)normality   
 
-Decision rule:
-Reject $H_0$: if $F_{stats} > F_{4,59,1-\alpha/2}= F_{4,59,0.995}=$ `r round(qf(0.995,4,59),digits =3)`
-Fail to reject $H_0$: if $F_{stats} < F_{4,59,0.995}$
+4) Decision rule:  
+Reject $H_0$: if $F_{stats} > F_{4,59,1-\alpha}= F_{4,59,0.99}=$ `r round(qf(0.99,4,59),digits =3)`  
+Fail to reject $H_0$: if $F_{stats} < F_{4,59,0.99}$
 
-Interpretation:
-Since $F_{stats} = 6.433  > F_{4,59,1-\alpha/2}= F_{4,59,0.995}=$ `r round(qf(0.995,4,59),digits =3)`, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups.
+5) Interpretation:
+Since $F_{stats} = 6.433  > F_{4,59,1-\alpha}= F_{4,59,0.99}=$ `r round(qf(0.99,4,59),digits =3)`, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups.
 
-```{r}
-sur_aov <- aov(survival ~ organ, data = sur_df)
 
-pander(sur_aov)
-
-```
-
-## c) how to adjust 0.05 to 0.01
+## c) pairwise comparisons
 1) Bonferroni
 ```{r}
-pairwise.t.test(sur_df$survival, sur_df$organ, p.adj = 'bonferroni')  
+pairwise.t.test(sur_df$survival, sur_df$organ, p.adj = 'bonferroni', conf.level = 0.99) 
 ```
 
 2) Tukey
-```{r}
-TukeyHSD(sur_aov,conf.level = 0.99) ## 0.99???
-TukeyHSD(sur_aov,conf.level = 0.99) %>% plot()
-
-glht(sur_aov, linfct = mcp(organ = "Tukey")) %>% summary()
-glht(sur_aov, linfct = mcp(organ = "Tukey")) %>% plot()
+```{r fig.width=8, fig.height=4}
+TukeyHSD(sur_aov,conf.level = 0.99) 
+par(mar=c(2,8,2,2))
+TukeyHSD(sur_aov,conf.level = 0.99) %>% plot(las = 1)
 ```
 
 3) Dunnett Test
 ```{r}
-glht(sur_aov, linfct = mcp(organ = "Dunnett")) %>% summary()
+glht(sur_aov, linfct = mcp(organ = "Dunnett"),conf.level =0.99) %>% summary()
 ```
 
-## d) 
+The main conclusions of these three methods are consistent with each other: at a significance level of 0.01, we can conclude that there's a significant difference in average survival time between bronchus and breast cancer; colon and breast cancer; stomach and breast cancer. According to Bonferroni and Tukey, we can also conclude that there's no there's no enough evidence to support a significant difference between other pairwise groups.  
+As we can see, the p-value using Tukey's method is smaller than that of Bonferroni's methods, indicating than Tukey is less conservative than Bonferroni. And Dunnett is used to compare with a specific group rather than any pairwise comparisons, like Bonferroni and Tukey. 
+
+## d)  
 i) check the normality assumption
 ```{r}
 # first, try a hist/density plot.
@@ -90,13 +100,109 @@ hist(residuals(sur_aov))
 
 # check the normality (of residuals) assumption
 qqnorm(residuals(sur_aov))
-
+qqline(residuals(sur_aov),lwd = 2)
 ```
-As the QQ-plot shows, the normality assumption is questionable. Therefore, we can  Kruskal Wallis test to fix the problem.  
+ 
+As the QQ-plot shows, the normality assumption is questionable. Therefore, we can  use **non-parametric test (Kruskal Wallis test)** or **transformation** to fix the problem. 
+
 ii) KW test 
 ```{r}
-kruskal.test(survival ~ organ, data = sur_df) %>% pander()
+kruskal.test(survival ~ organ, data = sur_df) %>% pander::pander()
 ```
-The p-value is 0.005, at a significance level 0.01, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups. The p-value of kw-test is 0.004798, much larger than that of the anova test(0.0002295), which shows that kw-test is harder to reject $H_0$ and it's more conservative and less powerful. 
+  
+Since p-value < 0.01, at a significance level 0.01, we reject $H_0$ and conclude that there is a significant difference in average survival time among different cancer groups. The p-value of kw-test is 0.004798, much larger than that of the anova test(0.0002295), which shows that kw-test is harder to reject $H_0$ and it's more conservative and less powerful. 
 
 # Problem3
+a) 
+$$
+\begin{aligned}
+Average_{zinc} &=\frac{n_{zinc}\times Avg_{zinc}+n_{zinc+iron}\times Avg_{zinc+iron}}
+{n_{iron}+n_{zinc+iron}}\\
+&= \frac{54 \times 0.7+55\times0.8}{54+55}\\
+&= `r  round((54*0.7+55*0.8)/(54+55),digits=2)`
+\end{aligned}
+$$
+$$
+\begin{aligned}
+Average_{non-zinc} &=\frac{n_{placebo}\times Avg_{placebo}+
+n_{iron}\times Avg_{iron}}
+{n_{placebo}+n_{iron}}\\
+&= \frac{56 \times 1.1+54\times1.4}{56+54}\\
+&= `r  round((56*1.1+54*1.4)/(56+54),digits=2)`
+\end{aligned}
+$$
+$$
+diff = Average_{zinc}-Average_{non-zinc}=`r  round((54*0.7+55*0.8)/(54+55)-(56*1.1+54*1.4)/(56+54),digits=2)`
+$$
+b)
+$$
+\begin{aligned}
+&sd_{placebo} =s.e._{placebo}\times \sqrt{n_{placebo}}=\sqrt{56} \times 0.2 =`r round(sqrt(56)*0.2,digits = 2)`\\
+&sd_{iron} =s.e._{iron}\times \sqrt{n_{iron}}=\sqrt{54} \times0.2 =`r round(sqrt(54)*0.2, digits = 2)`\\
+&sd_{zinc} =s.e._{zinc}\times \sqrt{n_{zinc}}=\sqrt{54} \times 0.1 =`r round(sqrt(54)*0.1, digits = 2)`\\
+&sd_{zinc+iron} =s.e._{zinc+iron}\times \sqrt{n_{zinc+iron}}=\sqrt{55} \times 0.1 =`r round(sqrt(55)*0.1,digits = 2)`\\
+\end{aligned}
+$$
+
+Between 4 initial groups, placebo and iron group share similar and larger standard deviation, zinc and zinc+iron group share similar and smaller standard deviation. 
+
+To decide if we can assume equal variances, we can use F-test. For "zinc" and "zinc-iron", $F_{stats} =\frac{s_{placebo}^2}{s_{zinc+iron}^2} =\frac{0.73^2}{0.74^2}=0.97 \leq F_{53,54,1-0.05/2}$ = `r round(qf(0.975,53,54),digits = 2)` and $\geq F_{53,54,0.05/2}$ = `r round(qf(1-0.975,53,54),digits = 2)`. For "placebo" and "iron" groups, $F_{stats} =\frac{s_{zinc}^2}{s_{iron}^2} =\frac{1.50^2}{1.47^2}=1.04 \leq F_{55,53,1-0.05/2}$ = `r round(qf(0.975,55,53),digits = 2)` and  $\geq F_{55,53,0.05/2}$ = `r round(qf(1-0.975,55,53),digits = 2)`  
+
+Therefore, we can assume that the standard deviation is equal b/w "zinc" and "zinc-iron", and also b/w "placebo" and "iron".
+
+$$
+\begin{aligned}
+s^2_{zinc} &= \frac{s^2_{zinc}\times(n_{zinc}-1)+s^2_{zinc+iron}\times(n_{zinc+iron}-1)}
+{n_{iron}+n_{zinc+iron}-2}
+\\
+&=\frac{0.73^2 \times53 +0.74^2\times 54}{54+55-2}
+\\
+&= 0.54
+\\
+s^2_{non-iron} &=\frac{s^2_{placebo}\times(n_{placebo}-1)+s^2_{iron}\times(n_{iron}-1)}
+{n_{placebo}+n_{iron}-2}\\
+&=\frac{1.50^2 \times55 +1.47^2\times 53}{56+54-2}
+\\
+&= 2.21
+\end{aligned}
+$$
+
+c)
+i) Equal allocation
+$$
+\begin{aligned}
+n &=\frac{\left(\sigma_{zinc}^{2}+\sigma_{non-zinc}^{2}\right)\left(z_{1-\alpha / 2}+z_{1-\beta}\right)^{2}}{\Delta^{2}}\\
+&=\frac{(0.54+2.21)(1.96+0.84)^2}{0.5^2}\\
+&=86.24\\
+&\approx87
+\end{aligned}
+$$
+
+Therefore, the sample size is 87 for both zinc and non-zinc group.
+
+ii) 2:1 allocation
+$$
+k = n_{non-zinc}/n_{zinc}  = 2
+$$
+
+$$
+\begin{aligned}
+n_{zinc}&=\frac{\left(\sigma_{zinc}^{2}+\sigma_{non-zinc}^{2} / k\right)\left(z_{1-\alpha / 2}+z_{1-\beta}\right)^{2}}{\Delta^{2}} \\
+&=\frac{(0.54+2.21/2)(1.96+0.84)^2}{0.5^2}\\
+&=51.59\\
+&\approx52
+\end{aligned}
+$$
+Therefore, the sample size for zinc group is 52. 
+$$
+\begin{aligned}
+n_{non-zinc}&=\frac{\left(k \sigma_{zinc}^{2}+\sigma_{non-zinc}^{2}\right)\left(z_{1-\alpha / 2}+z_{1-\beta}\right)^{2}}{\Delta^{2}}\\
+&= \frac{(2\times0.54+2.21)(1.96+0.84)^2}{0.5^2}\\
+&= 103.17\\
+&\approx 104
+\end{aligned}
+$$
+Therefore, the sample size for non-zinc group is 104. 
+
+
+

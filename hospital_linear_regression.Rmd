@@ -1,0 +1,120 @@
+---
+title: "hospital"
+author: "xj2249"
+date: "2019/10/31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(faraway)
+library(broom)
+```
+
+```{r}
+data_hosp <- 
+        read.csv("./Hospital.csv") %>% 
+        janitor::clean_names() %>% 
+        mutate(region = factor(region),
+               ms = ifelse(medschl == 1,1,ifelse(medschl == 2, 0, NA))
+               )
+names(data_hosp)
+```
+
+# Simple linear regression: Length of stay (LOS) vs number of BEDS 
+```{r}
+reg_hos<-lm(data_hosp$los~data_hosp$beds)
+summary(reg_hos)
+```
+
+## Matrix model
+```{r}
+model.matrix(reg_hos)
+model.matrix(reg_hos) %>% head
+```
+
+# Multiple linear regression
+```{r}
+# Var 1: Number of BEDS 
+# Var 2: INFRISK (prob. % of getting an infection during hospitalization)
+
+regmult1_hos<-lm(data_hosp$los~data_hosp$beds + data_hosp$infrisk)
+
+# Analyze the regression results
+summary(regmult1_hos)
+```
+
+
+## Multiple linear regression: BEDS and INFRISK and NURSE
+```{r}
+regmult2_hos<-lm(los ~ beds + infrisk + nurse,data = data_hosp)
+summary(regmult2_hos)
+```
+
+## Categorical predictor REGION: multiple levels
+```{r}
+# Simple linear regression with predictor REGION (1:NE, 2:NC, 3:S, 4:W)
+data_hosp %>% lm(los~region, data = .) %>% summary
+
+# Change the reference category for REGION (from 1 to 3)
+# Intercept added
+data_hosp %>% 
+        mutate(region = relevel(region,ref = 3)) %>% 
+        lm(los~region, data = .) %>% 
+        summary
+
+# No intercept model
+data_hosp %>% 
+        lm(LOS~0+region, data = .) %>% 
+        summary
+
+```
+
+
+## Multiple linear regression: INFRISK, new MS and Region (1:NE, 2:NC, 3:S, 4:W)
+```{r}
+regmult4_hos <- 
+        data_hosp %>% 
+        lm(los~infrisk + ms+ region, data = .)
+summary(regmult4_hos)
+```
+
+### 'General' global test for all predictors
+```{r}
+anova(regmult4_hos)
+```
+
+### try jeff's way to test region
+```{r}
+reg4_null <- 
+        data_hosp %>% 
+        lm(los~infrisk + ms, data = .)
+anova(reg4_null,regmult4_hos)
+# results for "region" variable is the same. we're both test if the beta for this variable is zero. (?)
+```
+
+
+## Multiple linear regression: new MS, Region (1:NE, 2:NC, 3:S, 4:W) and their interaction
+```{r}
+regmult5_hos <- lm(los~infrisk*ms, data = data_hosp)
+summary(regmult5_hos)
+```
+
+### Vizualize interaction for reg5
+```{r}
+gen_risk <- seq(0,8,0.1)
+beta <- regmult5_hos$coefficients
+yhat0 <- beta[1] + beta[2]*gen_risk
+yhat1 <- beta[1] + beta[3] + (beta[2] + beta[4])*gen_risk
+
+plot(data_hosp$infrisk, data_hosp$los, 
+     xlab = 'Infection Risk (%)', ylab = 'Length of stay (days)',
+     main = ('Scatter plot with overlaid fitted lines by medical school affiliation'))
+lines(gen_risk, yhat0, lwd = 2, col = 2)
+lines(gen_risk, yhat1, lwd = 2, col = 3)
+```
+
+
+
+
