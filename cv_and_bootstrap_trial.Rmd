@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+author: "xj2249"
+date: "2019/11/21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+surg_df <- read_csv("Surgical.csv")
+```
+
+# create bootstrap sample
+```{r}
+boot_straps <-
+  surg_df %>% 
+  modelr::bootstrap(n = 1000)
+
+results <-
+    boot_straps %>% 
+    mutate(
+        model = map(.x = strap, ~lm(Lnsurvival ~ Enzyme + Progindex + Alcheav + Bloodclot, data=.x)),
+        result = map(model, broom::tidy)) %>% 
+    dplyr::select(-strap, -model) %>% 
+    unnest(result) %>% 
+    group_by(term) %>% 
+    summarize(
+        boot_mean = mean(estimate),
+        boot_se = sd(estimate))
+
+results
+    
+```
+

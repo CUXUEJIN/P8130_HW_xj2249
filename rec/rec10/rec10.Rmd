@@ -1,0 +1,107 @@
+---
+title: "rec10"
+author: "xj2249"
+date: "2019/11/8"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+load("./rec/rec10/data/ESTRADL.DAT.rdata")
+table(estradl$Agefbo)
+names(estradl)
+df <- 
+        estradl %>% 
+        janitor::clean_names() %>% 
+        mutate(ethnic = factor(ethnic, labels = c("Caucasian","African American")),
+               anykids = case_when(anykids==0 ~ "no",
+                                   TRUE ~ "yes"),
+               anykids = factor(anykids),
+               agemenar = as.numeric(agemenar),
+               numchild = as.numeric(numchild),
+               agefbo = recode(agefbo,"0" = ""),
+               agefbo = as.numeric(agefbo)
+               ) 
+skimr::skim(df)        
+ table(is.na(df$agefbo))     
+```
+
+# relationship b/w BMI and Estradiol levels
+```{r}
+df %>% 
+        ggplot(aes(x = estradl, y = bmi)) + 
+        geom_point() +
+        xlim(0,100)
+
+df %>% 
+        lm(bmi~estradl, data = .) %>% 
+        broom::tidy()
+```
+
+# relationship b/w WHR and Estradiol levels
+```{r}
+df %>% 
+        ggplot(aes(x = estradl, y = whr)) + 
+        geom_point()+
+        xlim(0,100)
+
+df %>% 
+        lm(whr~estradl, data = .) %>% 
+        broom::tidy()
+```
+
+# the relationship in Caucasian and African American women
+```{r}
+df %>% 
+        ggplot(aes(x = estradl, y = bmi)) + 
+        geom_point() +
+        xlim(0,100) + 
+        facet_grid(.~ethnic)
+# Caucasian
+df %>% 
+        filter(ethnic == "Caucasian") %>% 
+        lm(bmi~estradl, data = .) %>% 
+        broom::tidy()
+# Caucasian 
+df %>% 
+        filter(ethnic == "Caucasian") %>% 
+        lm(whr~estradl, data = .) %>% 
+        broom::tidy()
+
+# African American
+df %>% 
+        filter(ethnic == "African American") %>% 
+        lm(whr~estradl, data = .) %>% 
+        broom::tidy()
+# African American
+df %>% 
+        filter(ethnic == "African American") %>% 
+        lm(bmi~estradl, data = .) %>% 
+        broom::tidy()
+```
+
+# adjust for remaining risk factors
+```{r}
+str(df )
+df %>% 
+        lm(bmi~ estradl + ethnic + entage + numchild  + anykids + agemenar, data = .) %>%
+        summary() 
+
+
+
+```
+
+
+```{r}
+df %>% 
+        group_by(ethnic) %>% 
+        summarise(es = mean(estradl))
+df %>% 
+        lm(estradl~ ethnic + bmi, data = .) %>%
+        summary() 
+
+df %>% 
+        lm(estradl~ ethnic , data = .) %>%
+        summary() 
+```
+

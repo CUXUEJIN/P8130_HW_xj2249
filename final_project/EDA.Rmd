@@ -1,0 +1,47 @@
+---
+title: "EDA"
+author: "xj2249"
+date: "2019/12/4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(DataExplorer)
+```
+
+# clean data
+```{r}
+law_df <- 
+    read_csv("./final_project/Lawsuit.csv") %>% 
+    janitor::clean_names() %>% 
+    mutate(percent = (sal95 - sal94)/sal94,
+           sum = sal95 + sal94,
+           gender = factor(gender,labels = c("Female","Male")),
+           gender = relevel(gender, ref = "Male"),
+           dept = factor(dept, labels = c("bio","phy","gene","pedia","med","sur")),
+           clin = factor(clin, labels = c("research","clinical")),
+           cert = factor(cert, labels = c("not certified","certified")),
+           rank = factor(rank,labels = c("assistant","associate","full")),
+           )
+```
+
+# exploratory visualization
+```{r}
+# boxplots
+law_df %>% 
+    select(-id) %>% 
+    plot_boxplot(by = "gender")
+
+# histgram   
+law_df %>% 
+    select(-id) %>% 
+    plot_histogram()
+```
+
+# table1
+```{r}
+
+```
+

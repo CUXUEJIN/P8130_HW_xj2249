@@ -24,7 +24,7 @@ names(data_hosp)
 
 # Simple linear regression: Length of stay (LOS) vs number of BEDS 
 ```{r}
-reg_hos<-lm(data_hosp$los~data_hosp$beds)
+reg_hos <- lm(data_hosp$los~data_hosp$beds)
 summary(reg_hos)
 ```
 
@@ -50,6 +50,9 @@ summary(regmult1_hos)
 ```{r}
 regmult2_hos<-lm(los ~ beds + infrisk + nurse,data = data_hosp)
 summary(regmult2_hos)
+
+lm(los ~ 0 +  beds + infrisk + nurse,data = data_hosp) %>% tidy()
+tidy(regmult2_hos)
 ```
 
 ## Categorical predictor REGION: multiple levels
@@ -66,7 +69,7 @@ data_hosp %>%
 
 # No intercept model
 data_hosp %>% 
-        lm(LOS~0+region, data = .) %>% 
+        lm(los~0+region, data = .) %>% 
         summary
 
 ```

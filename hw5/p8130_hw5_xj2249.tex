@@ -1,0 +1,1404 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={p8130\_hw5\_xj2249},
+            pdfauthor={xj2249},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{p8130\_hw5\_xj2249}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{xj2249}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{12/2/2019}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\begin{document}
+\maketitle
+
+\hypertarget{problem1}{%
+\section{Problem1}\label{problem1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{state_df <-}\StringTok{ }
+\StringTok{    }\NormalTok{state.x77 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{a-descriptive-statistics}{%
+\subsection{a) Descriptive statistics}\label{a-descriptive-statistics}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# descriptive statistics for variables of interest}
+\NormalTok{control_table <-}\StringTok{ }\KeywordTok{tableby.control}\NormalTok{(}
+        \DataTypeTok{total =} \OtherTok{FALSE}\NormalTok{,}
+        \DataTypeTok{test =} \OtherTok{FALSE}\NormalTok{,}
+        \DataTypeTok{numeric.stats =} \KeywordTok{c}\NormalTok{(}\StringTok{"meansd"}\NormalTok{,}\StringTok{"medianq1q3"}\NormalTok{,}\StringTok{"range"}\NormalTok{),}
+        \DataTypeTok{stats.labels =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{meansd =} \StringTok{"Mean (SD)"}\NormalTok{,}
+                            \DataTypeTok{medianq1q3 =} \StringTok{"Median (Q1, Q3)"}\NormalTok{,}
+                            \DataTypeTok{range =} \StringTok{"Min - Max"}\NormalTok{),}
+        \DataTypeTok{digits =} \DecValTok{2}
+\NormalTok{        ) }
+
+
+\NormalTok{state_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{        }\KeywordTok{tableby}\NormalTok{(}\OperatorTok{~}\NormalTok{.,}
+                \DataTypeTok{data =}\NormalTok{ .,}
+                \DataTypeTok{control =}\NormalTok{ control_table) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{        }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{text =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{        }\NormalTok{kableExtra}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\DataTypeTok{caption =} \StringTok{"Characcteristics of patients"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{        }\NormalTok{kableExtra}\OperatorTok{::}\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{latex_options =} \StringTok{"hold_position"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[!h]
+
+\caption{\label{tab:unnamed-chunk-2}Characcteristics of patients}
+\centering
+\begin{tabular}[t]{l|l}
+\hline
+ & Overall (N=50)\\
+\hline
+population & \\
+\hline
+-  Mean (SD) & 4246.42 (4464.49)\\
+\hline
+-  Median (Q1, Q3) & 2838.50 (1079.50, 4968.50)\\
+\hline
+-  Min - Max & 365.00 - 21198.00\\
+\hline
+income & \\
+\hline
+-  Mean (SD) & 4435.80 (614.47)\\
+\hline
+-  Median (Q1, Q3) & 4519.00 (3992.75, 4813.50)\\
+\hline
+-  Min - Max & 3098.00 - 6315.00\\
+\hline
+illiteracy & \\
+\hline
+-  Mean (SD) & 1.17 (0.61)\\
+\hline
+-  Median (Q1, Q3) & 0.95 (0.62, 1.58)\\
+\hline
+-  Min - Max & 0.50 - 2.80\\
+\hline
+life\_exp & \\
+\hline
+-  Mean (SD) & 70.88 (1.34)\\
+\hline
+-  Median (Q1, Q3) & 70.67 (70.12, 71.89)\\
+\hline
+-  Min - Max & 67.96 - 73.60\\
+\hline
+murder & \\
+\hline
+-  Mean (SD) & 7.38 (3.69)\\
+\hline
+-  Median (Q1, Q3) & 6.85 (4.35, 10.67)\\
+\hline
+-  Min - Max & 1.40 - 15.10\\
+\hline
+hs\_grad & \\
+\hline
+-  Mean (SD) & 53.11 (8.08)\\
+\hline
+-  Median (Q1, Q3) & 53.25 (48.05, 59.15)\\
+\hline
+-  Min - Max & 37.80 - 67.30\\
+\hline
+frost & \\
+\hline
+-  Mean (SD) & 104.46 (51.98)\\
+\hline
+-  Median (Q1, Q3) & 114.50 (66.25, 139.75)\\
+\hline
+-  Min - Max & 0.00 - 188.00\\
+\hline
+area & \\
+\hline
+-  Mean (SD) & 70735.88 (85327.30)\\
+\hline
+-  Median (Q1, Q3) & 54277.00 (36985.25, 81162.50)\\
+\hline
+-  Min - Max & 1049.00 - 566432.00\\
+\hline
+\end{tabular}
+\end{table}
+
+\hypertarget{b-exploratory-plots}{%
+\subsection{b) Exploratory plots}\label{b-exploratory-plots}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot_histogram}\NormalTok{(state_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-3-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot_scatterplot}\NormalTok{(state_df,}\DataTypeTok{by =} \StringTok{"life_exp"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-3-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot_correlation}\NormalTok{(state_df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(life_exp,}\KeywordTok{everything}\NormalTok{()))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-3-3}
+
+\hypertarget{c-automatic-procedure}{%
+\section{c) Automatic procedure}\label{c-automatic-procedure}}
+
+\hypertarget{backwards-elimination}{%
+\subsubsection{Backwards elimination}\label{backwards-elimination}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{full <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(life_exp}\OperatorTok{~}\NormalTok{.,}\DataTypeTok{data =}\NormalTok{ state_df)}
+\KeywordTok{summary}\NormalTok{(full)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ ., data = state_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.48895 -0.51232 -0.02747  0.57002  1.49447 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.094e+01  1.748e+00  40.586  < 2e-16 ***
+## population   5.180e-05  2.919e-05   1.775   0.0832 .  
+## income      -2.180e-05  2.444e-04  -0.089   0.9293    
+## illiteracy   3.382e-02  3.663e-01   0.092   0.9269    
+## murder      -3.011e-01  4.662e-02  -6.459 8.68e-08 ***
+## hs_grad      4.893e-02  2.332e-02   2.098   0.0420 *  
+## frost       -5.735e-03  3.143e-03  -1.825   0.0752 .  
+## area        -7.383e-08  1.668e-06  -0.044   0.9649    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7448 on 42 degrees of freedom
+## Multiple R-squared:  0.7362, Adjusted R-squared:  0.6922 
+## F-statistic: 16.74 on 7 and 42 DF,  p-value: 2.534e-10
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# No area}
+\NormalTok{step1 <-}\StringTok{ }\KeywordTok{update}\NormalTok{(full, . }\OperatorTok{~}\StringTok{ }\NormalTok{. }\OperatorTok{-}\NormalTok{area)}
+\KeywordTok{summary}\NormalTok{(step1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ population + income + illiteracy + murder + 
+##     hs_grad + frost, data = state_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.49047 -0.52533 -0.02546  0.57160  1.50374 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.099e+01  1.387e+00  51.165  < 2e-16 ***
+## population   5.188e-05  2.879e-05   1.802   0.0785 .  
+## income      -2.444e-05  2.343e-04  -0.104   0.9174    
+## illiteracy   2.846e-02  3.416e-01   0.083   0.9340    
+## murder      -3.018e-01  4.334e-02  -6.963 1.45e-08 ***
+## hs_grad      4.847e-02  2.067e-02   2.345   0.0237 *  
+## frost       -5.776e-03  2.970e-03  -1.945   0.0584 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7361 on 43 degrees of freedom
+## Multiple R-squared:  0.7361, Adjusted R-squared:  0.6993 
+## F-statistic: 19.99 on 6 and 43 DF,  p-value: 5.362e-11
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# No illiteracy}
+\NormalTok{step2 <-}\StringTok{ }\KeywordTok{update}\NormalTok{(step1, . }\OperatorTok{~}\StringTok{ }\NormalTok{. }\OperatorTok{-}\NormalTok{illiteracy)}
+\KeywordTok{summary}\NormalTok{(step2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ population + income + murder + hs_grad + 
+##     frost, data = state_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.4892 -0.5122 -0.0329  0.5645  1.5166 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.107e+01  1.029e+00  69.067  < 2e-16 ***
+## population   5.115e-05  2.709e-05   1.888   0.0657 .  
+## income      -2.477e-05  2.316e-04  -0.107   0.9153    
+## murder      -3.000e-01  3.704e-02  -8.099 2.91e-10 ***
+## hs_grad      4.776e-02  1.859e-02   2.569   0.0137 *  
+## frost       -5.910e-03  2.468e-03  -2.395   0.0210 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7277 on 44 degrees of freedom
+## Multiple R-squared:  0.7361, Adjusted R-squared:  0.7061 
+## F-statistic: 24.55 on 5 and 44 DF,  p-value: 1.019e-11
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# No income}
+\NormalTok{step3 <-}\StringTok{ }\KeywordTok{update}\NormalTok{(step2, . }\OperatorTok{~}\StringTok{ }\NormalTok{. }\OperatorTok{-}\NormalTok{income)}
+\KeywordTok{summary}\NormalTok{(step3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ population + murder + hs_grad + frost, 
+##     data = state_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47095 -0.53464 -0.03701  0.57621  1.50683 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.103e+01  9.529e-01  74.542  < 2e-16 ***
+## population   5.014e-05  2.512e-05   1.996  0.05201 .  
+## murder      -3.001e-01  3.661e-02  -8.199 1.77e-10 ***
+## hs_grad      4.658e-02  1.483e-02   3.142  0.00297 ** 
+## frost       -5.943e-03  2.421e-03  -2.455  0.01802 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7197 on 45 degrees of freedom
+## Multiple R-squared:  0.736,  Adjusted R-squared:  0.7126 
+## F-statistic: 31.37 on 4 and 45 DF,  p-value: 1.696e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# No population}
+\NormalTok{step4 <-}\StringTok{ }\KeywordTok{update}\NormalTok{(step3, . }\OperatorTok{~}\StringTok{ }\NormalTok{. }\OperatorTok{-}\NormalTok{population)}
+\KeywordTok{summary}\NormalTok{(step4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost, data = state_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5015 -0.5391  0.1014  0.5921  1.2268 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 71.036379   0.983262  72.246  < 2e-16 ***
+## murder      -0.283065   0.036731  -7.706 8.04e-10 ***
+## hs_grad      0.049949   0.015201   3.286  0.00195 ** 
+## frost       -0.006912   0.002447  -2.824  0.00699 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7427 on 46 degrees of freedom
+## Multiple R-squared:  0.7127, Adjusted R-squared:  0.6939 
+## F-statistic: 38.03 on 3 and 46 DF,  p-value: 1.634e-12
+\end{verbatim}
+
+The ``best subset'' is \texttt{murder\ +\ hs\_grad\ +\ frost} for
+backward elimination.
+
+\hypertarget{forward-elimination}{%
+\subsubsection{Forward elimination}\label{forward-elimination}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{null =}\StringTok{ }\KeywordTok{lm}\NormalTok{( life_exp }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ state_df )}
+\KeywordTok{addterm}\NormalTok{( null, }\DataTypeTok{scope =}\NormalTok{ full, }\DataTypeTok{test =} \StringTok{"F"}\NormalTok{ )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Single term additions
+## 
+## Model:
+## life_exp ~ 1
+##            Df Sum of Sq    RSS     AIC F Value     Pr(F)    
+## <none>                  88.299  30.435                      
+## population  1     0.409 87.890  32.203   0.223   0.63866    
+## income      1    10.223 78.076  26.283   6.285   0.01562 *  
+## illiteracy  1    30.578 57.721  11.179  25.429 6.969e-06 ***
+## murder      1    53.838 34.461 -14.609  74.989 2.260e-11 ***
+## hs_grad     1    29.931 58.368  11.737  24.615 9.196e-06 ***
+## frost       1     6.064 82.235  28.878   3.540   0.06599 .  
+## area        1     1.017 87.282  31.856   0.559   0.45815    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add murder}
+\NormalTok{step1 =}\StringTok{ }\KeywordTok{update}\NormalTok{(null,.}\OperatorTok{~}\NormalTok{.}\OperatorTok{+}\NormalTok{murder) }
+\KeywordTok{addterm}\NormalTok{( step1, }\DataTypeTok{scope =}\NormalTok{ full, }\DataTypeTok{test =} \StringTok{"F"}\NormalTok{ )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Single term additions
+## 
+## Model:
+## life_exp ~ murder
+##            Df Sum of Sq    RSS     AIC F Value    Pr(F)   
+## <none>                  34.461 -14.609                    
+## population  1    4.0161 30.445 -18.805  6.1999 0.016369 * 
+## income      1    2.4047 32.057 -16.226  3.5257 0.066636 . 
+## illiteracy  1    0.2732 34.188 -13.007  0.3756 0.542910   
+## hs_grad     1    4.6910 29.770 -19.925  7.4059 0.009088 **
+## frost       1    3.1346 31.327 -17.378  4.7029 0.035205 * 
+## area        1    0.4697 33.992 -13.295  0.6494 0.424375   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add hs_grad }
+\NormalTok{step2 =}\StringTok{ }\KeywordTok{update}\NormalTok{(step1,.}\OperatorTok{~}\NormalTok{.}\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad) }
+\KeywordTok{addterm}\NormalTok{( step2, }\DataTypeTok{scope =}\NormalTok{ full, }\DataTypeTok{test =} \StringTok{"F"}\NormalTok{ )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Single term additions
+## 
+## Model:
+## life_exp ~ murder + hs_grad
+##            Df Sum of Sq    RSS     AIC F Value    Pr(F)   
+## <none>                  29.770 -19.925                    
+## population  1    3.3405 26.430 -23.877  5.8141 0.019949 * 
+## income      1    0.1022 29.668 -18.097  0.1585 0.692418   
+## illiteracy  1    0.4419 29.328 -18.673  0.6931 0.409421   
+## frost       1    4.3987 25.372 -25.920  7.9751 0.006988 **
+## area        1    0.2775 29.493 -18.394  0.4329 0.513863   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add frost }
+\NormalTok{step3 =}\StringTok{ }\KeywordTok{update}\NormalTok{(step2,.}\OperatorTok{~}\NormalTok{.}\OperatorTok{+}\StringTok{ }\NormalTok{frost) }
+\KeywordTok{addterm}\NormalTok{( step3, }\DataTypeTok{scope =}\NormalTok{ full, }\DataTypeTok{test =} \StringTok{"F"}\NormalTok{ )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Single term additions
+## 
+## Model:
+## life_exp ~ murder + hs_grad + frost
+##            Df Sum of Sq    RSS     AIC F Value   Pr(F)  
+## <none>                  25.372 -25.920                  
+## population  1   2.06358 23.308 -28.161  3.9841 0.05201 .
+## income      1   0.18232 25.189 -24.280  0.3257 0.57103  
+## illiteracy  1   0.17184 25.200 -24.259  0.3069 0.58236  
+## area        1   0.02573 25.346 -23.970  0.0457 0.83173  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(step3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost, data = state_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5015 -0.5391  0.1014  0.5921  1.2268 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 71.036379   0.983262  72.246  < 2e-16 ***
+## murder      -0.283065   0.036731  -7.706 8.04e-10 ***
+## hs_grad      0.049949   0.015201   3.286  0.00195 ** 
+## frost       -0.006912   0.002447  -2.824  0.00699 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7427 on 46 degrees of freedom
+## Multiple R-squared:  0.7127, Adjusted R-squared:  0.6939 
+## F-statistic: 38.03 on 3 and 46 DF,  p-value: 1.634e-12
+\end{verbatim}
+
+The ``best subset'' is \texttt{murder\ +\ hs\_grad\ +\ frost} for
+forward elimination.
+
+\hypertarget{stepwise-selection}{%
+\subsubsection{Stepwise selection}\label{stepwise-selection}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{step}\NormalTok{(full, }\DataTypeTok{direction =} \StringTok{'both'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Start:  AIC=-22.18
+## life_exp ~ population + income + illiteracy + murder + hs_grad + 
+##     frost + area
+## 
+##              Df Sum of Sq    RSS     AIC
+## - area        1    0.0011 23.298 -24.182
+## - income      1    0.0044 23.302 -24.175
+## - illiteracy  1    0.0047 23.302 -24.174
+## <none>                    23.297 -22.185
+## - population  1    1.7472 25.044 -20.569
+## - frost       1    1.8466 25.144 -20.371
+## - hs_grad     1    2.4413 25.738 -19.202
+## - murder      1   23.1411 46.438  10.305
+## 
+## Step:  AIC=-24.18
+## life_exp ~ population + income + illiteracy + murder + hs_grad + 
+##     frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - illiteracy  1    0.0038 23.302 -26.174
+## - income      1    0.0059 23.304 -26.170
+## <none>                    23.298 -24.182
+## - population  1    1.7599 25.058 -22.541
+## + area        1    0.0011 23.297 -22.185
+## - frost       1    2.0488 25.347 -21.968
+## - hs_grad     1    2.9804 26.279 -20.163
+## - murder      1   26.2721 49.570  11.569
+## 
+## Step:  AIC=-26.17
+## life_exp ~ population + income + murder + hs_grad + frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - income      1     0.006 23.308 -28.161
+## <none>                    23.302 -26.174
+## - population  1     1.887 25.189 -24.280
+## + illiteracy  1     0.004 23.298 -24.182
+## + area        1     0.000 23.302 -24.174
+## - frost       1     3.037 26.339 -22.048
+## - hs_grad     1     3.495 26.797 -21.187
+## - murder      1    34.739 58.041  17.456
+## 
+## Step:  AIC=-28.16
+## life_exp ~ population + murder + hs_grad + frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## <none>                    23.308 -28.161
+## + income      1     0.006 23.302 -26.174
+## + illiteracy  1     0.004 23.304 -26.170
+## + area        1     0.001 23.307 -26.163
+## - population  1     2.064 25.372 -25.920
+## - frost       1     3.122 26.430 -23.877
+## - hs_grad     1     5.112 28.420 -20.246
+## - murder      1    34.816 58.124  15.528
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ population + murder + hs_grad + frost, 
+##     data = state_df)
+## 
+## Coefficients:
+## (Intercept)   population       murder      hs_grad        frost  
+##   7.103e+01    5.014e-05   -3.001e-01    4.658e-02   -5.943e-03
+\end{verbatim}
+
+The ``best subset'' is
+\texttt{population\ +\ murder\ +\ hs\_grad\ +\ frost} for stepwise
+selection.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_back <-}\StringTok{  }\KeywordTok{lm}\NormalTok{(life_exp}\OperatorTok{~}\NormalTok{murder }\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad }\OperatorTok{+}\StringTok{ }\NormalTok{frost,}\DataTypeTok{data =}\NormalTok{ state_df)}
+\KeywordTok{summary}\NormalTok{(model_back)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost, data = state_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5015 -0.5391  0.1014  0.5921  1.2268 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 71.036379   0.983262  72.246  < 2e-16 ***
+## murder      -0.283065   0.036731  -7.706 8.04e-10 ***
+## hs_grad      0.049949   0.015201   3.286  0.00195 ** 
+## frost       -0.006912   0.002447  -2.824  0.00699 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7427 on 46 degrees of freedom
+## Multiple R-squared:  0.7127, Adjusted R-squared:  0.6939 
+## F-statistic: 38.03 on 3 and 46 DF,  p-value: 1.634e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_step <-}\StringTok{  }\KeywordTok{lm}\NormalTok{(life_exp}\OperatorTok{~}\NormalTok{murder }\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad }\OperatorTok{+}\StringTok{ }\NormalTok{frost }\OperatorTok{+}\StringTok{ }\NormalTok{population,}\DataTypeTok{data =}\NormalTok{ state_df)}
+\KeywordTok{summary}\NormalTok{(model_step)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost + population, 
+##     data = state_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47095 -0.53464 -0.03701  0.57621  1.50683 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.103e+01  9.529e-01  74.542  < 2e-16 ***
+## murder      -3.001e-01  3.661e-02  -8.199 1.77e-10 ***
+## hs_grad      4.658e-02  1.483e-02   3.142  0.00297 ** 
+## frost       -5.943e-03  2.421e-03  -2.455  0.01802 *  
+## population   5.014e-05  2.512e-05   1.996  0.05201 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7197 on 45 degrees of freedom
+## Multiple R-squared:  0.736,  Adjusted R-squared:  0.7126 
+## F-statistic: 31.37 on 4 and 45 DF,  p-value: 1.696e-12
+\end{verbatim}
+
+\begin{itemize}
+\item
+  The automatic procedures do not necessarily generate the same model.
+  In this case, backwards and forward elimination generate the same
+  model, whereas stepwise selection generate a different one.
+\item
+  The variable \texttt{population} is a close call and I decide to keep
+  it. After adding \texttt{population}, the adjusted R-squared increase
+  from 0.6939 to 0.7126. The larger model have a better predictive
+  ability, and because our goal is a predictive model, it's better to
+  keep \texttt{population} in the model.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor}\NormalTok{(state_df[,}\DecValTok{3}\NormalTok{],state_df[,}\DecValTok{6}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.6571886
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  The is a moderate correlation between \texttt{Illiteracy} and
+  \texttt{HS\ graduation\ rate}. Only \texttt{HS\ graduation\ rate} is
+  contained in the subset.
+\end{itemize}
+
+\hypertarget{d-criterion-based-procedures}{%
+\subsection{d) criterion-based
+procedures}\label{d-criterion-based-procedures}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{best <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(model, ...) }
+\NormalTok{\{}
+\NormalTok{  subsets <-}\StringTok{ }\KeywordTok{regsubsets}\NormalTok{(}\KeywordTok{formula}\NormalTok{(model), }\KeywordTok{model.frame}\NormalTok{(model), ...)}
+\NormalTok{  subsets <-}\StringTok{ }\KeywordTok{with}\NormalTok{(}\KeywordTok{summary}\NormalTok{(subsets),}
+                  \KeywordTok{cbind}\NormalTok{(}\DataTypeTok{p =} \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(which)), which, rss, rsq, adjr2, cp, bic))}
+  \KeywordTok{return}\NormalTok{(subsets)}
+\NormalTok{\}  }
+
+\KeywordTok{best}\NormalTok{(full) }\OperatorTok{%>%}\StringTok{ }\NormalTok{kableExtra}\OperatorTok{::}\KeywordTok{kable}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\NormalTok{kableExtra}\OperatorTok{::}\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{latex_options =} \StringTok{"scale_down"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}{r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+p & (Intercept) & population & income & illiteracy & murder & hs\_grad & frost & area & rss & rsq & adjr2 & cp & bic\\
+\hline
+1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 34.46133 & 0.6097201 & 0.6015893 & 16.126760 & -39.22051\\
+\hline
+2 & 1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 29.77036 & 0.6628461 & 0.6484991 & 9.669894 & -42.62472\\
+\hline
+3 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 25.37162 & 0.7126624 & 0.6939230 & 3.739878 & -46.70678\\
+\hline
+4 & 1 & 1 & 0 & 0 & 1 & 1 & 1 & 0 & 23.30804 & 0.7360328 & 0.7125690 & 2.019659 & -47.03640\\
+\hline
+5 & 1 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 23.30198 & 0.7361014 & 0.7061129 & 4.008737 & -43.13738\\
+\hline
+6 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 23.29822 & 0.7361440 & 0.6993268 & 6.001959 & -39.23342\\
+\hline
+7 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 23.29714 & 0.7361563 & 0.6921823 & 8.000000 & -35.32373\\
+\hline
+\end{tabular}}
+\end{table}
+
+The ``best subset'' is
+\texttt{population\ +\ murder\ +\ hs\_grad\ +\ frost} for stepwise
+selection.
+
+\hypertarget{e-criterion-based-procedures}{%
+\subsection{e) criterion-based
+procedures}\label{e-criterion-based-procedures}}
+
+Actually, the prefered model from c) and d) is the same, and the model
+comparison is in c). The final model is
+\texttt{life\_exp\ =\ murder\ +\ hs\_grad\ +\ frost\ +\ population}.
+\#\#\# leverage \& influential points
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{final_model <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(life_exp}\OperatorTok{~}\NormalTok{murder }\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad }\OperatorTok{+}\StringTok{ }\NormalTok{frost }\OperatorTok{+}\StringTok{ }\NormalTok{population,}\DataTypeTok{data =}\NormalTok{ state_df)}
+\NormalTok{influence <-}\StringTok{ }\KeywordTok{influence.measures}\NormalTok{(final_model)}
+\KeywordTok{summary}\NormalTok{(influence)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Potentially influential observations of
+##   lm(formula = life_exp ~ murder + hs_grad + frost + population,      data = state_df) :
+## 
+##            dfb.1_ dfb.mrdr dfb.hs_g dfb.frst dfb.pplt dffit   cov.r  
+## Alaska      0.41  -0.40    -0.35    -0.16     0.18    -0.50    1.36_*
+## California  0.04   0.00    -0.04     0.03    -0.09    -0.12    1.81_*
+## Hawaii     -0.03  -0.28     0.66    -1.24_*  -0.57     1.43_*  0.74  
+## Nevada      0.40  -0.42    -0.29    -0.28     0.14    -0.52    1.46_*
+## New York    0.01   0.00     0.00    -0.01    -0.06    -0.07    1.44_*
+##            cook.d hat    
+## Alaska      0.05   0.25  
+## California  0.00   0.38_*
+## Hawaii      0.36   0.24  
+## Nevada      0.05   0.29  
+## New York    0.00   0.23
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hatvalues}\NormalTok{(final_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        Alabama         Alaska        Arizona       Arkansas     California 
+##     0.14061825     0.24727915     0.14434012     0.08623296     0.38475924 
+##       Colorado    Connecticut       Delaware        Florida        Georgia 
+##     0.08960146     0.04944598     0.03735911     0.09648760     0.10033898 
+##         Hawaii          Idaho       Illinois        Indiana           Iowa 
+##     0.23979244     0.04280306     0.10541465     0.02574946     0.05932553 
+##         Kansas       Kentucky      Louisiana          Maine       Maryland 
+##     0.04264019     0.09506497     0.11572004     0.06424817     0.02251734 
+##  Massachusetts       Michigan      Minnesota    Mississippi       Missouri 
+##     0.06542733     0.08844258     0.06818938     0.09685602     0.03207145 
+##        Montana       Nebraska         Nevada  New Hampshire     New Jersey 
+##     0.04851763     0.05189556     0.28860921     0.06221607     0.05097477 
+##     New Mexico       New York North Carolina   North Dakota           Ohio 
+##     0.06286777     0.22522744     0.08927508     0.12949804     0.08138412 
+##       Oklahoma         Oregon   Pennsylvania   Rhode Island South Carolina 
+##     0.03526037     0.13125063     0.12395238     0.11735640     0.10289140 
+##   South Dakota      Tennessee          Texas           Utah        Vermont 
+##     0.09208789     0.06417731     0.10172016     0.09012184     0.05722013 
+##       Virginia     Washington  West Virginia      Wisconsin        Wyoming 
+##     0.03054924     0.17168830     0.08498652     0.06355888     0.10198735
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(final_model,}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-10-1}
+
+Moderate leverages are: Alaska, California, Hawaii, Nevada and New York.
+Hawaii could be a influential point, withh dffit \textgreater{} 1 but
+cook's distance \textless{} 0.5. Therefore, we can fit the model with
+and without Hawaii, and see the change.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_no_hawaii <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(life_exp}\OperatorTok{~}\NormalTok{murder }\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad }\OperatorTok{+}\StringTok{ }\NormalTok{frost }\OperatorTok{+}\StringTok{ }\NormalTok{population,}
+                      \DataTypeTok{data =}\NormalTok{ state_df[(}\KeywordTok{row.names}\NormalTok{(state_df) }\OperatorTok{!=}\StringTok{ "Hawaii"}\NormalTok{), ])}
+\KeywordTok{summary}\NormalTok{(model_no_hawaii)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost + population, 
+##     data = state_df[(row.names(state_df) != "Hawaii"), ])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.48967 -0.50158  0.01999  0.54355  1.11810 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.106e+01  8.998e-01  78.966  < 2e-16 ***
+## murder      -2.906e-01  3.477e-02  -8.357 1.24e-10 ***
+## hs_grad      3.728e-02  1.447e-02   2.576   0.0134 *  
+## frost       -3.099e-03  2.545e-03  -1.218   0.2297    
+## population   6.363e-05  2.431e-05   2.618   0.0121 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6796 on 44 degrees of freedom
+## Multiple R-squared:  0.7483, Adjusted R-squared:  0.7254 
+## F-statistic: 32.71 on 4 and 44 DF,  p-value: 1.15e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(final_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = life_exp ~ murder + hs_grad + frost + population, 
+##     data = state_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47095 -0.53464 -0.03701  0.57621  1.50683 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.103e+01  9.529e-01  74.542  < 2e-16 ***
+## murder      -3.001e-01  3.661e-02  -8.199 1.77e-10 ***
+## hs_grad      4.658e-02  1.483e-02   3.142  0.00297 ** 
+## frost       -5.943e-03  2.421e-03  -2.455  0.01802 *  
+## population   5.014e-05  2.512e-05   1.996  0.05201 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7197 on 45 degrees of freedom
+## Multiple R-squared:  0.736,  Adjusted R-squared:  0.7126 
+## F-statistic: 31.37 on 4 and 45 DF,  p-value: 1.696e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(model_no_hawaii}\OperatorTok{$}\NormalTok{coefficients}\OperatorTok{-}\NormalTok{final_model}\OperatorTok{$}\NormalTok{coefficients)}\OperatorTok{/}\NormalTok{final_model}\OperatorTok{$}\NormalTok{coefficients}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   (Intercept)        murder       hs_grad         frost    population 
+##  0.0004181555 -0.0317796965 -0.1997080752 -0.4784953062  0.2689780916
+\end{verbatim}
+
+As we can see, after removal of ``Hawaii'' some coefficients change
+greatly in magnitude, including \texttt{hs\_grad},\texttt{frost} and
+\texttt{population}(up to 20\% and more).
+
+Since we have no way to know if the data for ``Hawaii'' is reliable, we
+can not just remove casually. Therefore, we may report the results with
+and without ``Hawaii'' in the model.
+
+\hypertarget{model-assumptions}{%
+\subsubsection{Model assumptions}\label{model-assumptions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(final_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-12-1}
+
+\begin{itemize}
+\tightlist
+\item
+  Constant variance: the ``residual vs fitted'' and ``scale-location''
+  plots suggest a constant variance.
+\item
+  Normality: Points fall along a line in the middle of the graph, but
+  curve off at two ends.
+\end{itemize}
+
+\hypertarget{cross-validation}{%
+\subsubsection{Cross validation}\label{cross-validation}}
+
+Test the model predictive ability using a 10-fold cross-validation (10
+repeats).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{train_ctr <-}\StringTok{ }\KeywordTok{trainControl}\NormalTok{(}\DataTypeTok{method =} \StringTok{"repeatedcv"}\NormalTok{, }\DataTypeTok{number =} \DecValTok{10}\NormalTok{, }\DataTypeTok{repeats =} \DecValTok{10}\NormalTok{)}
+
+\CommentTok{# Fit the 4-variables model that we discussed in previous lectures}
+\NormalTok{model_cv <-}\StringTok{ }\KeywordTok{train}\NormalTok{(life_exp }\OperatorTok{~}\StringTok{ }\NormalTok{murder }\OperatorTok{+}\StringTok{ }\NormalTok{hs_grad }\OperatorTok{+}\StringTok{ }\NormalTok{frost }\OperatorTok{+}\StringTok{ }\NormalTok{population,}
+                  \DataTypeTok{data =}\NormalTok{ state_df,}
+                  \DataTypeTok{trControl =}\NormalTok{ train_ctr,}
+                  \DataTypeTok{method =} \StringTok{'lm'}\NormalTok{)}
+\NormalTok{model_cv}\OperatorTok{$}\NormalTok{results}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   intercept      RMSE  Rsquared       MAE    RMSESD RsquaredSD     MAESD
+## 1      TRUE 0.7404084 0.7420079 0.6313099 0.1998243  0.1939375 0.1826762
+\end{verbatim}
+
+The R-squared is 0.77 and RMSE is 0.75, which indicates the model has a
+good predictive ability.
+
+\hypertarget{f-summary}{%
+\subsection{f) Summary}\label{f-summary}}
+
+In summary, the model with predictor \texttt{population},
+\texttt{murder} ,\texttt{hs\_grad} and \texttt{frost} is our final model
+and it has a good predictive ability overall.
+
+\hypertarget{problem2}{%
+\section{Problem2}\label{problem2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{com_df <-}\StringTok{ }
+\StringTok{    }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"./hw5/CommercialProperties.csv"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{()}
+    
+\NormalTok{com_df }\OperatorTok{%>%}\StringTok{ }\KeywordTok{view}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{a-model-with-all-variables}{%
+\subsection{a) Model with all
+variables}\label{a-model-with-all-variables}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{full_model <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(rental_rate }\OperatorTok{~}\NormalTok{.,}\DataTypeTok{data =}\NormalTok{ com_df)}
+\KeywordTok{summary}\NormalTok{(full_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = rental_rate ~ ., data = com_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.1872 -0.5911 -0.0910  0.5579  2.9441 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   1.220e+01  5.780e-01  21.110  < 2e-16 ***
+## age          -1.420e-01  2.134e-02  -6.655 3.89e-09 ***
+## taxes         2.820e-01  6.317e-02   4.464 2.75e-05 ***
+## vacancy_rate  6.193e-01  1.087e+00   0.570     0.57    
+## sq_footage    7.924e-06  1.385e-06   5.722 1.98e-07 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.137 on 76 degrees of freedom
+## Multiple R-squared:  0.5847, Adjusted R-squared:  0.5629 
+## F-statistic: 26.76 on 4 and 76 DF,  p-value: 7.272e-14
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{full_model}\OperatorTok{$}\NormalTok{terms}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## rental_rate ~ age + taxes + vacancy_rate + sq_footage
+## attr(,"variables")
+## list(rental_rate, age, taxes, vacancy_rate, sq_footage)
+## attr(,"factors")
+##              age taxes vacancy_rate sq_footage
+## rental_rate    0     0            0          0
+## age            1     0            0          0
+## taxes          0     1            0          0
+## vacancy_rate   0     0            1          0
+## sq_footage     0     0            0          1
+## attr(,"term.labels")
+## [1] "age"          "taxes"        "vacancy_rate" "sq_footage"  
+## attr(,"order")
+## [1] 1 1 1 1
+## attr(,"intercept")
+## [1] 1
+## attr(,"response")
+## [1] 1
+## attr(,".Environment")
+## <environment: R_GlobalEnv>
+## attr(,"predvars")
+## list(rental_rate, age, taxes, vacancy_rate, sq_footage)
+## attr(,"dataClasses")
+##  rental_rate          age        taxes vacancy_rate   sq_footage 
+##    "numeric"    "numeric"    "numeric"    "numeric"    "numeric"
+\end{verbatim}
+
+\begin{itemize}
+\item
+  \texttt{age}, \texttt{taxes}, and \texttt{sq\_footage} are significant
+  predictors whereas \texttt{vacancy\_rate} is a non-significant
+  predictor.
+\item
+  According to overall F test, p-value\textless{} 0.001, at a
+  significance level of 0.05, we reject \(H_0\) and conclude that there
+  is a linear relationship between rental rate and the set of all
+  variables.
+\item
+  The R-squared is 0.5847, suggesting the a poor performance of overall
+  fit.
+\end{itemize}
+
+\hypertarget{b-scatter-plot}{%
+\subsection{b) Scatter plot}\label{b-scatter-plot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dev.off}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## function (which = dev.cur()) 
+## {
+##     if (which == 1) 
+##         stop("cannot shut down device 1 (the null device)")
+##     .External(C_devoff, as.integer(which))
+##     dev.cur()
+## }
+## <bytecode: 0x7f9c9c5b5000>
+## <environment: namespace:grDevices>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot_scatterplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ com_df[,}\OperatorTok{-}\DecValTok{4}\NormalTok{], }\DataTypeTok{by =} \StringTok{"rental_rate"}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-16-1}
+
+comment???
+
+\hypertarget{c-model-with-significant-predictors}{%
+\subsection{c) Model with significant
+predictors}\label{c-model-with-significant-predictors}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sig_model <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(rental_rate }\OperatorTok{~}\NormalTok{.,}\DataTypeTok{data =}\NormalTok{  com_df[,}\OperatorTok{-}\DecValTok{4}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{d-model-with-significant-predictors}{%
+\subsection{d) Model with significant
+predictors}\label{d-model-with-significant-predictors}}
+
+\hypertarget{higher-order-term}{%
+\subsubsection{Higher order term}\label{higher-order-term}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{com_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{residuals =} \KeywordTok{residuals}\NormalTok{(sig_model)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ residuals, }\DataTypeTok{x =}\NormalTok{ age)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_smooth}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ residuals),}\DataTypeTok{se =}\NormalTok{ F,}\DataTypeTok{color =} \StringTok{"red"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Residuals vs age plot"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.9\linewidth]{p8130_hw5_xj2249_files/figure-latex/unnamed-chunk-18-1}
+The residuals vs age plots shows a concave curve so we may use fit age
+with a quadratic term.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{quartfit_age <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(rental_rate }\OperatorTok{~}\NormalTok{age }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(age}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }\NormalTok{taxes }\OperatorTok{+}\StringTok{ }\NormalTok{sq_footage , }\DataTypeTok{data =}\NormalTok{ com_df)}
+\KeywordTok{vif}\NormalTok{(quartfit_age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        age   I(age^2)      taxes sq_footage 
+##  34.673257  32.956178   1.532560   1.268814
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(quartfit_age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = rental_rate ~ age + I(age^2) + taxes + sq_footage, 
+##     data = com_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.89596 -0.62547 -0.08907  0.62793  2.68309 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  1.249e+01  4.805e-01  26.000  < 2e-16 ***
+## age         -4.043e-01  1.089e-01  -3.712  0.00039 ***
+## I(age^2)     1.415e-02  5.821e-03   2.431  0.01743 *  
+## taxes        3.140e-01  5.880e-02   5.340 9.33e-07 ***
+## sq_footage   8.046e-06  1.267e-06   6.351 1.42e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.097 on 76 degrees of freedom
+## Multiple R-squared:  0.6131, Adjusted R-squared:  0.5927 
+## F-statistic:  30.1 on 4 and 76 DF,  p-value: 5.203e-15
+\end{verbatim}
+
+The vif of age and \(age^2\) is very large so we should center age.
+
+Let's fit the model with centerd age.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{center_df =}\StringTok{ }\KeywordTok{mutate}\NormalTok{(com_df, }\DataTypeTok{center_age =}\NormalTok{ age}\OperatorTok{-}\KeywordTok{mean}\NormalTok{(age))}
+\NormalTok{quartfit_centerage <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(rental_rate }\OperatorTok{~}\StringTok{ }\NormalTok{center_age }\OperatorTok{+}\StringTok{ }\KeywordTok{I}\NormalTok{(center_age}\OperatorTok{^}\DecValTok{2}\NormalTok{)}\OperatorTok{+}\StringTok{ }\NormalTok{taxes }\OperatorTok{+}\StringTok{ }\NormalTok{sq_footage , }\DataTypeTok{data =}\NormalTok{ center_df)}
+
+\KeywordTok{vif}\NormalTok{(quartfit_centerage)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      center_age I(center_age^2)           taxes      sq_footage 
+##        1.901945        1.608797        1.532560        1.268814
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(quartfit_centerage )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = rental_rate ~ center_age + I(center_age^2) + taxes + 
+##     sq_footage, data = center_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.89596 -0.62547 -0.08907  0.62793  2.68309 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)      1.019e+01  6.709e-01  15.188  < 2e-16 ***
+## center_age      -1.818e-01  2.551e-02  -7.125 5.10e-10 ***
+## I(center_age^2)  1.415e-02  5.821e-03   2.431   0.0174 *  
+## taxes            3.140e-01  5.880e-02   5.340 9.33e-07 ***
+## sq_footage       8.046e-06  1.267e-06   6.351 1.42e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.097 on 76 degrees of freedom
+## Multiple R-squared:  0.6131, Adjusted R-squared:  0.5927 
+## F-statistic:  30.1 on 4 and 76 DF,  p-value: 5.203e-15
+\end{verbatim}
+
+\hypertarget{piecewise-linear-model}{%
+\subsubsection{Piecewise linear model}\label{piecewise-linear-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{com_df_nonlin <-}
+\StringTok{    }\NormalTok{com_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{knot =}\NormalTok{ (age }\OperatorTok{-}\StringTok{ }\DecValTok{10}\NormalTok{)}\OperatorTok{*}\NormalTok{(age }\OperatorTok{>=}\StringTok{ }\DecValTok{10}\NormalTok{))}
+\NormalTok{piecewise_age <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(rental_rate }\OperatorTok{~}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{knot }\OperatorTok{+}\StringTok{ }\NormalTok{taxes }\OperatorTok{+}\StringTok{ }\NormalTok{sq_footage , }\DataTypeTok{data =}\NormalTok{ com_df_nonlin)}
+\end{Highlighting}
+\end{Shaded}
+
+I choose age=10 as the knot, because it seems to be a truning point.
+When age\textless{}10, with the increase of age, y has a increasing
+trend, while after age \textgreater{}10, y has a decreasing trend.
+
+\hypertarget{model-comparison}{%
+\subsubsection{Model comparison}\label{model-comparison}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(quartfit_centerage)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = rental_rate ~ center_age + I(center_age^2) + taxes + 
+##     sq_footage, data = center_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.89596 -0.62547 -0.08907  0.62793  2.68309 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)      1.019e+01  6.709e-01  15.188  < 2e-16 ***
+## center_age      -1.818e-01  2.551e-02  -7.125 5.10e-10 ***
+## I(center_age^2)  1.415e-02  5.821e-03   2.431   0.0174 *  
+## taxes            3.140e-01  5.880e-02   5.340 9.33e-07 ***
+## sq_footage       8.046e-06  1.267e-06   6.351 1.42e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.097 on 76 degrees of freedom
+## Multiple R-squared:  0.6131, Adjusted R-squared:  0.5927 
+## F-statistic:  30.1 on 4 and 76 DF,  p-value: 5.203e-15
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(piecewise_age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = rental_rate ~ age + knot + taxes + sq_footage, data = com_df_nonlin)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.9321 -0.6387 -0.0901  0.6188  2.6443 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  1.238e+01  4.787e-01  25.866  < 2e-16 ***
+## age         -2.865e-01  6.330e-02  -4.526 2.18e-05 ***
+## knot         3.261e-01  1.374e-01   2.374   0.0201 *  
+## taxes        3.036e-01  5.772e-02   5.260 1.29e-06 ***
+## sq_footage   8.373e-06  1.270e-06   6.591 5.13e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.099 on 76 degrees of freedom
+## Multiple R-squared:  0.6118, Adjusted R-squared:  0.5913 
+## F-statistic: 29.94 on 4 and 76 DF,  p-value: 5.89e-15
+\end{verbatim}
+
+The two models have very similar \(R^2\) and \(\text{adjusted } R^2\).
+And piecewise model is much easier to interpret so I would recommend the
+piecewise model.
+
+\hypertarget{e-model-comparision}{%
+\subsection{e) Model comparision}\label{e-model-comparision}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rbind}\NormalTok{(broom}\OperatorTok{::}\KeywordTok{glance}\NormalTok{(sig_model),broom}\OperatorTok{::}\KeywordTok{glance}\NormalTok{(piecewise_age)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"non-piecewise model"}\NormalTok{,}\StringTok{"piecewise model"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(model,}\KeywordTok{everything}\NormalTok{(),}\OperatorTok{-}\KeywordTok{c}\NormalTok{(sigma,logLik,deviance,df.residual)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\NormalTok{kableExtra}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r|r|r|r|r|r}
+\hline
+model & r.squared & adj.r.squared & statistic & p.value & df & AIC & BIC\\
+\hline
+non-piecewise model & 0.583 & 0.567 & 35.88 & 0 & 4 & 255.836 & 267.808\\
+\hline
+piecewise model & 0.612 & 0.591 & 29.94 & 0 & 5 & 252.041 & 266.408\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# try cross validation}
+\NormalTok{non_piecewiese_cv <-}\StringTok{ }
+\StringTok{    }\KeywordTok{train}\NormalTok{( rental_rate }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =}\NormalTok{ com_df[, }\DecValTok{-4}\NormalTok{],}
+           \DataTypeTok{trControl =}\NormalTok{ train_ctr,}
+           \DataTypeTok{method =} \StringTok{'lm'}\NormalTok{)}
+
+\NormalTok{piecewiese_cv <-}\StringTok{     }
+\StringTok{    }\KeywordTok{train}\NormalTok{(rental_rate }\OperatorTok{~}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{knot }\OperatorTok{+}\StringTok{ }\NormalTok{taxes }\OperatorTok{+}\StringTok{ }\NormalTok{sq_footage, }\DataTypeTok{data =}\NormalTok{ com_df_nonlin,}
+          \DataTypeTok{trControl =}\NormalTok{ train_ctr,}
+          \DataTypeTok{method =} \StringTok{'lm'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}

@@ -1,0 +1,253 @@
+---
+title: "rec11"
+author: "xj2249"
+date: "2019/11/19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Problem1
+```{r}
+brand = tibble(
+    y = c(64,73,61,76,72,80,71,83,83,89,86,93,88,95,94,100),
+    x1 = c(4,4,4,4,6,6,6,6,8,8,8,8,10,10,10,10),
+    x2 = c(rep(c(2,4),8))
+)
+
+model <- lm(y ~.,data = brand)
+summary(model)
+```
+
+## a)
+studentized residual(internal)
+```{r}
+stu_res<-rstandard(model)
+outliers_y <- stu_res[abs(stu_res)>2.5]
+```
+no outlier in y
+
+## b)
+Leverage values
+```{r}
+influence.measures(model) %>% as_tibble()
+
+```
+no
+
+## c)
+```{r}
+hatvalues(model)
+sort(stu_res)
+case14 <- influence.measures(model) %>% tibble() %>% pull(.) %>% .[[1]] %>% .[14,]
+case14 
+```
+
+cut off 0.2  moderate leverage catogory
+or 2p/n
+
+abs(dffit) = 1.17 , 
+cook < 0.5 
+do not know!!! possible?
+
+potential point so need to check it out 
+
+## d)
+```{r}
+# with case 14
+model <- lm(y ~.,data = brand)
+# without case 14
+model_omit <- lm(y ~.,data = filter(brand, y !=95))
+# brand2 = brand[-14,]
+
+summary(model)
+summary(model_omit)
+```
+
+coeficient increaase, and se decrease !
+changed, but only moderatly(<10%)
+
+# Problem2
+```{r}
+hos <- 
+    read_csv("Hospital.csv") %>% 
+    janitor::clean_names() %>%
+    dplyr::select(-id,-xray,-beds,-medschl,-region)
+
+names(hos) <- c("y","x1","x2","x3","x4","x5","x6")
+```
+
+## new tool from rec10_solution code!!! looks good!
+```{r}
+DataExplorer::plot_histogram(hos)
+DataExplorer::introduce(hos)
+```
+
+##new color "coral"
+```{r}
+hos %>% 
+    ggplot(aes(x = x1, y = y )) +
+    geom_smooth(color = "coral")
+```
+
+
+## a) Scatter plot matrix for all variables
+```{r}
+
+hos %>% 
+    pairs()
+
+cor <- 
+    hos %>% 
+    cor() %>% 
+    round(digits = 2) 
+
+```
+
+x4 and x5, x5 and x6 , x4 and x6 are corrlated
+
+
+## b)
+```{r}
+anova(lm(y~x1 + x2, data = hos))
+```
+SSE(x1,x2) = 278.250 
+
+```{r}
+anova(lm(y~x1 + x2 +x3, data = hos))
+anova(lm(y~x1 + x2 +x4, data = hos))
+anova(lm(y~x1 + x2 +x5, data = hos))
+anova(lm(y~x1 + x2 +x6, data = hos)) %>% broom::tidy()
+```
+
+SSR(x3|x1,x2) = 3.248
+SSR(x4|x1,x2) = 37.899 
+SSR(x5|x1,x2) = 10.397
+SSR(x6|x1,x2) = 10.125 
+
+R^2(x3|x1,x2) = 3.248/278.250 = 0.01167296
+R^2(x4|x1,x2) = 37.899/278.250 = 0.1362049
+R^2(x5|x1,x2) = 10.397/278.250 =  0.03736568
+R^2(x6|x1,x2) = 10.125/278.250 =  0.03638814
+
+```{r}
+3.248/278.250 
+37.899/278.250 
+10.397/278.250
+10.125/278.250 
+```
+
+## c)
+x4 is the best  
+SSR(x4|x1,x2) = 37.899  yes, largest
+
+## d)
+```{r}
+model12 = lm(y~x1 + x2,data = hos)
+model124 = lm(y~x1 + x2 +x4, data = hos)
+anova(model12,model124)
+(37.899/1)/(2.205)
+summary(model12)
+anova(model12)
+summary(model124)
+library(HH)
+vif(model124)
+summary(lm(x1 ~ x2 +x4, data = hos))
+1/(1-0.003566) #that's how vif is caculated!!!
+```
+all less than 5, so no multi...
+
+## e)
+# automatic 
+```{r}
+library(ledp)
+model_full <- lm(y ~ ., data = hos)
+summary(model_full)
+backward1 <- update(model_full,.~.,-x6)
+summary(backward1)
+
+step(model_full, direction='backward')
+# leaps for mallow cp $adjr2 give adj r-squared 
+```
+
+
+
+# let's try to verify something
+##  SSR(X1) in only x1 and SSR(X1) in x1 and x2  
+```{r}
+# SSR(X1) in only x1 and SSR(X1) in x1 and x2  
+anova(lm(y~x1, data = hos)) 
+#SSR(X1) = 14.60 in x1
+anova(lm(y~x1 + x2 , data = hos))
+# SSR(X1) in x1 and x2  = 14.604 
+# OMG same? 
+
+# try other
+anova(lm(y~x1 + x2 + x3, data = hos))
+
+# yes! SSR(X2|X1) is the same too
+
+# sequence matters!
+anova(lm(y~x3 + x2 + x1, data = hos))
+summary(lm(y~x3 + x2 + x1, data = hos))
+summary(lm(y~ x1 +x3 + x2 ,data = hos))
+```
+
+## partial R^2
+```{r}
+cor  
+```
+x4 and x5 are highly correlated, let's see what's gonna happen 
+
+# change in coefficient and se
+```{r}
+summary(lm(y~x4, data = hos))
+# beta= 0.005891  and  se= 0.001039
+# R-squared:  0.2246,	Adjusted R-squared:  0.2176 
+summary(lm(y~x4+x5, data = hos))
+# beta= 0.011663  and  se= 0.002415
+# R-squared: 0.2705,	Adjusted R-squared:  0.2573
+summary(lm(y~x5, data = hos))
+```
+coeficient change, se increase and Adjusted R-squared decrease, R-squared increase.
+
+# paritial R-square of x4  and cody's way to calculate vif
+```{r}
+anova(lm(y~x5, data = hos))
+anova(lm(y~x5+x4, data = hos))
+63.298/361.80
+1/(1- 0.174953)
+```
+SSE(X5) = 361.80
+SSR(X4|X5) = 63.298
+R^2(X4|X5) = 63.298/361.80 = 0.174953 
+vif(?) = 1.212052 that's not right. cody's way is not working.
+
+annother
+```{r}
+summary(lm(x4~x5, data = hos))
+vif(lm( y ~x4+x5, data = hos))
+```
+
+vif = 1/(1-0.8243) = 5.69152
+
+## partial t-test, namely all t-tests in summary are testing marginal significance of xi afrer other predictors have been taken into account
+```{r}
+summary(lm(y~x1+x2+x3, data = hos))
+anova(lm(y~x1+x2+x3, data = hos))
+anova(lm(y~x1+x3 +x2, data = hos))
+
+# the t value will be diff from the t-value with x2+x3 in. 
+summary(lm(y~x1, data = hos))
+1.135^2
+4.908^2
+```
+for x3, 1.135^2 = 1.28 = F
+for x2, 4.908^2 = 24.09 = F
+
+
+
+

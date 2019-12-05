@@ -1,0 +1,308 @@
+---
+title: "p8130_hw5_xj2249"
+author: "xj2249"
+date: "12/2/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(faraway)
+library(arsenal)
+library(leaps)
+library(MASS)
+library(caret)
+library(DataExplorer)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width = 8, 
+	fig.height = 6,
+	out.width = "90%"
+)
+
+theme_set(theme_minimal() +  theme(plot.title = element_text(hjust = 0.5))) 
+getwd()
+```
+
+# Problem1
+```{r}
+state_df <- 
+    state.x77 %>% 
+    as.data.frame() %>% 
+    janitor::clean_names() 
+```
+
+## a) Descriptive statistics
+```{r}
+# descriptive statistics for variables of interest
+control_table <- tableby.control(
+        total = FALSE,
+        test = FALSE,
+        numeric.stats = c("meansd","medianq1q3","range"),
+        stats.labels = list(meansd = "Mean (SD)",
+                            medianq1q3 = "Median (Q1, Q3)",
+                            range = "Min - Max"),
+        digits = 2
+        ) 
+
+
+state_df %>% 
+        tableby(~.,
+                data = .,
+                control = control_table) %>% 
+        summary(text = TRUE) %>% 
+        kableExtra::kable(caption = "Characcteristics of patients") %>% 
+        kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+
+## b) Exploratory plots
+```{r}
+plot_histogram(state_df)
+plot_scatterplot(state_df,by = "life_exp")
+plot_correlation(state_df %>% dplyr::select(life_exp,everything()))
+```
+
+# c) Automatic procedure
+### Backwards elimination
+```{r}
+full <- lm(life_exp~.,data = state_df)
+summary(full)
+
+# No area
+step1 <- update(full, . ~ . -area)
+summary(step1)
+
+# No illiteracy
+step2 <- update(step1, . ~ . -illiteracy)
+summary(step2)
+
+# No income
+step3 <- update(step2, . ~ . -income)
+summary(step3)
+
+# No population
+step4 <- update(step3, . ~ . -population)
+summary(step4)
+```
+
+The "best subset" is  `murder + hs_grad + frost` for backward elimination.
+
+### Forward elimination
+```{r}
+null = lm( life_exp ~ 1, data = state_df )
+addterm( null, scope = full, test = "F" )
+
+# add murder
+step1 = update(null,.~.+murder) 
+addterm( step1, scope = full, test = "F" )
+
+# add hs_grad 
+step2 = update(step1,.~.+ hs_grad) 
+addterm( step2, scope = full, test = "F" )
+
+# add frost 
+step3 = update(step2,.~.+ frost) 
+addterm( step3, scope = full, test = "F" )
+summary(step3)
+```
+
+The "best subset" is  `murder + hs_grad + frost` for forward elimination.
+
+### Stepwise selection
+```{r}
+step(full, direction = 'both')
+```
+The "best subset" is `population + murder + hs_grad + frost` for stepwise selection.
+
+```{r}
+model_back <-  lm(life_exp~murder + hs_grad + frost,data = state_df)
+summary(model_back)
+
+model_step <-  lm(life_exp~murder + hs_grad + frost + population,data = state_df)
+summary(model_step)
+```
+
+* The automatic procedures do not necessarily generate the same model. In this case, backwards and forward elimination generate the same model, whereas stepwise selection generate a different one. 
+
+* The variable `population` is a close call and I decide to keep it. After adding `population`, the adjusted R-squared increase from 0.6939 to 0.7126. The larger model have a better predictive ability, and because our goal is a predictive model, it's better to keep `population` in the model. 
+
+```{r}
+cor(state_df[,3],state_df[,6])
+```
+
+* The is a moderate correlation between `Illiteracy` and `HS graduation rate`. Only `HS graduation rate` is contained in the subset.
+
+## d) criterion-based procedures
+```{r}
+best <- function(model, ...) 
+{
+  subsets <- regsubsets(formula(model), model.frame(model), ...)
+  subsets <- with(summary(subsets),
+                  cbind(p = as.numeric(rownames(which)), which, rss, rsq, adjr2, cp, bic))
+  return(subsets)
+}  
+
+best(full) %>% kableExtra::kable() %>% kableExtra::kable_styling(latex_options = "scale_down")
+
+```
+
+The "best subset" is `population + murder + hs_grad + frost` for stepwise selection.
+
+## e) criterion-based procedures
+Actually, the prefered model from c) and d) is the same, and the model comparison is in c).
+The final model is `life_exp = murder + hs_grad + frost + population`.
+### leverage & influential points
+```{r}
+final_model <- lm(life_exp~murder + hs_grad + frost + population,data = state_df)
+influence <- influence.measures(final_model)
+summary(influence)
+hatvalues(final_model)
+par(mfrow = c(2, 2))
+plot(final_model,c(4,5,6))
+```
+
+Moderate leverages are: Alaska, California, Hawaii, Nevada and New York. 
+Hawaii could be a influential point, withh dffit > 1 but cook's distance < 0.5.
+Therefore, we can fit the model with and without Hawaii, and see the change. 
+
+```{r}
+model_no_hawaii <- lm(life_exp~murder + hs_grad + frost + population,
+                      data = state_df[(row.names(state_df) != "Hawaii"), ])
+summary(model_no_hawaii)
+summary(final_model)
+(model_no_hawaii$coefficients-final_model$coefficients)/final_model$coefficients
+```
+As we can see, after removal of "Hawaii" some coefficients change greatly in magnitude, including `hs_grad`,`frost` and `population `(up to 20% and more).
+
+Since we have no way to know if the data for "Hawaii" is reliable, we can not just remove casually. Therefore, we may report the results with and without "Hawaii" in the model. 
+
+### Model assumptions
+```{r}
+par(mfrow = c(2, 2))
+plot(final_model)
+```
+
+* Constant variance: the "residual vs fitted" and "scale-location" plots suggest a constant variance.
+* Normality: Points fall along a line in the middle of the graph, but curve off at two ends.
+
+### Cross validation
+Test the model predictive ability using a 10-fold cross-validation (10 repeats).
+```{r}
+train_ctr <- trainControl(method = "repeatedcv", number = 10, repeats = 10)
+
+# Fit the 4-variables model that we discussed in previous lectures
+model_cv <- train(life_exp ~ murder + hs_grad + frost + population,
+                  data = state_df,
+                  trControl = train_ctr,
+                  method = 'lm')
+model_cv$results
+```
+
+The R-squared is 0.77 and RMSE is 0.75, which indicates the model has a good predictive ability.
+
+## f) Summary
+In summary, the model with predictor `population`, `murder` ,`hs_grad` and `frost` is our final model and it has a good predictive ability overall.
+
+# Problem2
+```{r}
+com_df <- 
+    read_csv("./hw5/CommercialProperties.csv") %>% 
+    janitor::clean_names()
+    
+com_df %>% view()
+```
+
+## a) Model with all variables
+```{r}
+full_model <- lm(rental_rate ~.,data = com_df)
+summary(full_model)
+full_model$terms
+```
+
+* `age`, `taxes`, and `sq_footage` are significant predictors whereas `vacancy_rate` is a non-significant predictor.    
+
+* According to overall F test, p-value< 0.001, at a significance level of 0.05, we reject $H_0$ and conclude that there is a linear relationship between rental rate and the set of all variables.
+
+* The R-squared is 0.5847, suggesting the a poor performance of overall fit.
+
+## b) Scatter plot
+```{r}
+dev.off
+plot_scatterplot(data = com_df[,-4], by = "rental_rate", ncol = 1)
+```
+
+comment???
+
+## c) Model with significant predictors
+```{r}
+sig_model <- lm(rental_rate ~.,data =  com_df[,-4])
+```
+
+
+## d) Model with significant predictors
+### Higher order term
+```{r}
+com_df %>% 
+    mutate(residuals = residuals(sig_model)) %>% 
+    ggplot(aes(y = residuals, x = age)) +
+    geom_point() +
+    geom_smooth(aes(y = residuals),se = F,color = "red") +
+    labs(title = "Residuals vs age plot")
+```
+The residuals vs age plots shows a concave curve so we may use fit age with a quadratic term. 
+
+```{r}
+quartfit_age <- lm(rental_rate ~age + I(age^2) + taxes + sq_footage , data = com_df)
+vif(quartfit_age)
+summary(quartfit_age)
+```
+The vif of age and $age^2$ is very large so we should center age. 
+
+Let's fit the model with centerd age.
+```{r}
+center_df = mutate(com_df, center_age = age-mean(age))
+quartfit_centerage <- lm(rental_rate ~ center_age + I(center_age^2)+ taxes + sq_footage , data = center_df)
+
+vif(quartfit_centerage)
+summary(quartfit_centerage )
+```
+
+
+###  Piecewise linear model
+```{r}
+com_df_nonlin <-
+    com_df %>% 
+    mutate(knot = (age - 10)*(age >= 10))
+piecewise_age <- lm(rental_rate ~ age + knot + taxes + sq_footage , data = com_df_nonlin)
+```
+I choose age=10 as the knot, because it seems to be a truning point. When age<10, with the increase of age, y has a increasing trend, while after age >10, y has a decreasing trend.
+
+### Model comparison
+```{r}
+summary(quartfit_centerage)
+summary(piecewise_age)
+```
+
+The two models have very similar  $R^2$ and $\text{adjusted } R^2$. And piecewise model is much easier to interpret so I would recommend the piecewise model.
+
+## e) Model comparision
+```{r}
+rbind(broom::glance(sig_model),broom::glance(piecewise_age)) %>% 
+    mutate(model = c("non-piecewise model","piecewise model")) %>% 
+    dplyr::select(model,everything(),-c(sigma,logLik,deviance,df.residual)) %>% 
+    kableExtra::kable(digits = 3)
+
+# try cross validation
+non_piecewiese_cv <- 
+    train( rental_rate ~ ., data = com_df[, -4],
+           trControl = train_ctr,
+           method = 'lm')
+
+piecewiese_cv <-     
+    train(rental_rate ~ age + knot + taxes + sq_footage, data = com_df_nonlin,
+          trControl = train_ctr,
+          method = 'lm')
+```

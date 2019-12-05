@@ -1,0 +1,371 @@
+---
+title: "p8130_hw4_xj2249"
+author: "xj2249"
+date: "11/12/2019"
+output: 
+  pdf_document:
+         latex_engine: xelatex
+---
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(broom)
+library(arsenal)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width = 8, 
+	fig.height = 6,
+	out.width = "90%"
+)
+
+theme_set(theme_minimal() +  theme(plot.title = element_text(hjust = 0.5))) 
+setwd("/Users/xuejin/Desktop/CUMC_semester1/Courses/Biostatistics Methods I/P8130_hw_xj2249/hw4")
+```
+
+# Problme1
+## a)
+The Least Squares line equation:
+$$
+\hat{Y} = \hat{\beta_0} + \hat{\beta_1}X_i
+$$
+Proof:
+According to method of Least Squares, $\hat{\beta_0}= \bar{Y}-\hat{\beta_1} \bar{X}$, therefore, when X = $\bar{X}$ 
+$$
+\begin{aligned}
+\hat{Y} &= \hat{\beta_0} + \hat{\beta_1}\bar{X}\\
+&= \bar{Y}-\hat{\beta_1} \bar{X} + \hat{\beta_1} \bar{X}\\
+&= \bar{Y}
+\end{aligned}
+$$
+Therefore, it always goes through the point ($\bar{X},\bar{Y}$).
+
+## b)
+First, there are some useful properties of LS:
+$$
+\begin{aligned}
+&\sum{e_i} = 0\\
+&\sum{X_ie_i} = 0\\
+&\sum{\hat{Y_i}e_i} = 0
+\end{aligned}
+$$
+ Proof: 
+ To minimize Q, we have:
+ 
+ $$
+ \begin{aligned} \frac{\partial Q}{\partial \beta_{0}} &=2 \sum_{i}\left(Y_{i}-\beta_{0}-\beta_{1} X_{i}\right) \cdot\left(-\beta_{0}\right)^{\prime} \\ &=-2 \sum_{i}\left(Y_{i}-\beta_{0}-\beta_{1} X_{i}\right)=0 \end{aligned}
+ $$
+ $$
+ \frac{\partial Q}{\partial \beta_{1}}=-2 \sum_{i}\left(Y_{i}-\beta_{0}-\beta_{1} X_{i}\right) \cdot X_{i}=0
+ $$
+ Then these two equation imply that $\sum{e_i} = 0$ and $\sum{X_ie_i} = 0$
+
+$$
+\begin{aligned} \sum_{i} \hat{Y}_{i} e_{i} &=\sum_{i}\left(\hat{\beta}_{0}+\hat{\beta}_{1} X_{i}\right) e_{i} \\ &=\hat{\beta}_{0} \sum_{i} e_{i}+\hat{\beta}_{1} \sum_{i} e_{i} X_{i} \\ &=0 \end{aligned} 
+$$
+Therefore, 
+$$
+\begin{aligned}
+corr(e_i,\hat{Y_i}) 
+&= corr(Y_i-\hat{Y_i},\hat{Y_i})\\
+&=corr(Y_i,\hat{Y_i}) - corr(\hat{Y_i},\hat{Y_i}) \\
+&= \frac{1}{n} \sum{(Y_i-\bar{Y})(\hat{Y_i}-\bar{\hat{Y}})} - 
+   \frac{1}{n} \sum{(\hat{Y_i}-\bar{\hat{Y}})^2}\\
+&= \frac{1}{n} \sum{(Y_i-\bar{Y})(\hat{Y_i}-\bar{Y})} -
+   \frac{1}{n} \sum{(\hat{Y_i}-\bar{Y})^2}\\
+&= \frac{1}{n} \sum{(Y_i-\bar{Y})(\hat{Y_i}-\bar{Y})} -(\hat{Y_i}-\bar{Y})^2\\
+&= \frac{1}{n} \sum{\hat{Y_i}(Y_i-\hat{Y_i})}\\
+&= \frac{1}{n} \sum{\hat{Y_i}e_i}\\
+&= 0
+\end{aligned}
+$$
+
+One of the possible explanations is that the variance of $\epsilon$ is not constant.  
+
+# Problem2
+## a)
+$$
+\begin{aligned}
+Q &=(\mathbf{Y}-\mathbf{X} \boldsymbol{\beta})^{\prime}(\mathbf{Y}-\mathbf{X} \boldsymbol{\beta})\\
+&=\mathbf{Y}^{\prime} \mathbf{Y}-\boldsymbol{\beta}^{\prime} \mathbf{X}^{\prime} \mathbf{Y}-\mathbf{Y}^{\prime} \mathbf{X} \boldsymbol{\beta}+\boldsymbol{\beta}^{\prime} \mathbf{X}^{\prime} \mathbf{X} \boldsymbol{\beta}\\
+&= \mathbf{Y}^{\prime} \mathbf{Y}-2 \boldsymbol{\beta}^{\prime} \mathbf{X}^{\prime} \mathbf{Y}+\boldsymbol{\beta}^{\prime} \mathbf{X}^{\prime} \mathbf{X} \boldsymbol{\beta}
+\end{aligned}
+$$
+Therefore, let 
+$$
+\frac{\partial}{\partial \beta}(Q)=-2 \mathbf{X}^{\prime} \mathbf{Y}+2 \mathbf{X}^{\prime} \mathbf{X} \boldsymbol{\beta} = 0
+$$
+then
+$$
+\underset{2 \times 1}{\boldsymbol{\hat\beta}}=\underset{2 \times 2}{\left(\mathbf{X}^{\prime} \mathbf{X}\right)^{-1}} \underset{2 \times 1}{\mathbf{X}^{\prime} \mathbf{Y}}
+$$
+
+$$
+\begin{aligned}
+E(\boldsymbol{\hat\beta})&=E({\left(\mathbf{X}^{\prime} \mathbf{X}\right)^{-1}}{\mathbf{X}^{\prime} \mathbf{Y}})\\
+&={\left(\mathbf{X}^{\prime} \mathbf{X}\right)^{-1}}{\mathbf{X}^{\prime}  E(\mathbf{Y}})\\
+&={\left(\mathbf{X}^{\prime} \mathbf{X}\right)^{-1}}{\mathbf{X}^{\prime}X\beta} \\
+&=\boldsymbol{I\beta}\\
+&=\boldsymbol{\beta}
+\end{aligned}
+$$
+
+## b)
+$$
+\begin{aligned} 
+\operatorname{Var}(\tilde{\beta}) &=\operatorname{Var}\left(\left(X^{\prime} X\right)^{-1} X^{\prime} Y\right)\\
+&=\left(X^{\prime} X\right)^{-1} X^{\prime} \sigma^{2} I X\left(X^{\prime} X\right)^{-1} \\ &=\sigma^{2} I\left(X^{\prime} X\right)^{-1} X^{\prime} X\left(X^{\prime} X\right)^{-1} \\ &=\sigma^{2}\left(X^{\prime} X\right)^{-1} \\ 
+&=\sigma^{2}\left[\begin{array}{cc}{n} & {\sum_{i=1}^{n} X_{i}} \\ {\sum_{i=1}^{n} X_{i}} & {\sum_{i=1}^{n} X_{i}^{2}}\end{array}\right]^{-1} \\
+&= \sigma^{2}\left[\begin{array}{cc}{\frac{1}{n}+\frac{\bar{X}^{2}}{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}} & {\frac{-\bar{X}}{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}} \\ {\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} & {\frac{1}{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}}}\end{array}\right]
+\end{aligned}
+$$
+
+# Problem3
+```{r ,echo = FALSE}
+# read in the "Brain" dataset
+brain_df <- 
+        readxl::read_excel("./Brain.xlsx") %>% 
+        janitor::clean_names() %>% 
+        mutate(brain_mass_g = as.numeric(brain_mass_g))
+```
+
+## a) Regression model for the nonhuman data
+```{r}
+lm_non_human <- 
+        brain_df %>% 
+        filter(species != "Homo sapiens") %>% 
+        lm(glia_neuron_ratio ~ ln_brain_mass, data = .)
+summary(lm_non_human)
+```
+
+Therefore, the regression equation is: 
+$$
+\hat{Y} = 0.164 +  0.181 \text{ln(brain mass)}
+$$
+
+## b) 
+$$
+\begin{aligned}
+\hat{Y}_{human} &= 0.164 + 0.181 \text{ln(brain mass)}\\
+&=0.164 + 0.181\times 7.22 \\
+&= `r round(0.164+0.181*7.22,digits = 3)`
+\end{aligned}
+$$
+
+Therefore, the predicted glia-neuron ratio for humans is `r round(0.164+0.181*7.22,digits = 3)`
+
+## c)
+The most-plausible range of values for the prediction is (2.30,6.23), which is the range of 
+ln(brain mass) for non-human. An interval for the prediction of a single new observation is more relevant for our prediction of human glia-neuron ratio, because in the case, we want to predict the value of a new observation(human data). 
+
+## d)
+```{r}
+pred_pi = predict.lm(lm_non_human,brain_df,interval = "prediction")
+
+# prediction interval
+brain_df <- cbind(brain_df,pred_pi) 
+brain_df %>% 
+        ggplot(aes(y = glia_neuron_ratio, x = ln_brain_mass)) +
+        geom_point() +
+        geom_line(aes(y = fit), color = "red" ) + 
+        geom_line( aes(y = lwr), color = "red", linetype = "dashed" ) +
+        geom_line( aes(y = upr), color = "red", linetype = "dashed") + 
+        labs( x = "ln(brain mass)", y = " Glia-neuron ratio", title = "95% prediction interval")
+```
+
+
+$$
+\begin{aligned}
+&\hat{\beta_{0}}+\hat{\beta_{1}} X_{h} \pm t_{n-2,1-\alpha / 2} \cdot \operatorname{se}\left(\hat{\beta_{0}}+\hat{\beta_{1}} X_{h}\right)\\
+\end{aligned}
+$$
+
+$$
+\operatorname{se}\left(\widehat{\beta_{0}}+\widehat{\beta_{1}} X_{h}\right)=\sqrt{M S E\left\{\frac{1}{n}+\left[\left(X_{h}-\bar{X}\right)^{2} / \sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}\right]+1\right\}}
+$$
+Therefore, 95% prediction interval for huamn is (1.04,1.91).
+As we can see, the huamn data point falls within the prediction interval for its given ln(brain mass), therefore, human brain doesn't have an excessive glia-neuron ratio for its mass compared with other primates
+
+## e)
+As we can see in the graph, the human data point falls outside the scope of non-human data points, from which we generate the regression line. Therefore, though it's not far away from the scope, we may still need to be cautious in using the regression line to predict.
+
+
+# Problem4 
+## a)
+```{r , echo=F}
+#read in the dataset
+hr_df <- 
+        read_csv("./HeartDisease.csv") %>% 
+        janitor::clean_names() %>% 
+        mutate(gender = factor(gender, labels = c("female","male")))
+
+# descriptive statistics for variables of interest
+control_table1 <- tableby.control(
+        total = FALSE,
+        test = FALSE,
+        numeric.stats = c("meansd","medianq1q3","range"),
+        stats.labels = list(meansd = "Mean (SD)",
+                            medianq1q3 = "Median (Q1, Q3)",
+                            range = "Min - Max"),
+        digits = 2
+        ) 
+
+
+hr_df %>% 
+        tableby(~ totalcost + e_rvisits + age + gender + complications + duration,
+                data = .,
+                control = control_table1) %>% 
+        summary(text = TRUE) %>% 
+        kableExtra::kable(caption = "Characcteristics of patients") %>% 
+        kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+The main outcome is "total cost" (in dollars) of patients diagnosed with heart disease, and the main predictor is the "number of emergency room (ER) visits". Other important covariates include age, gender, number or intervetion carried out, drugs prescribed, complications, comorbidities, and duraion of treatment condition. 
+
+
+## b) 
+```{r, echo=F}
+hr_df %>% 
+    ggplot(aes(x = totalcost)) +
+    geom_histogram() + 
+    labs(title = "Distribution of total cost of patients") 
+
+hr_df <-
+        hr_df %>% 
+        mutate(log_totalcost = log(totalcost + 1))
+```
+
+As we can see in the first histgram, the distribution for  "total cost" is highly right-skewed. Therefore, we may need to use *Logarithm transformation* to  reduce right skewness. 
+
+
+```{r , echo=F}
+hr_df %>% 
+    ggplot(aes(x = log_totalcost )) +
+    geom_histogram() +
+    labs(title = "Distribution of total cost after log transformation")
+```
+
+After log tranformation, the distribution for "total cost" is a bell-shaped curve, and the transformed total cost follows a normal distribution. 
+
+## c) Creat "comp_bin" variable.
+```{r}
+hr_df <- 
+        hr_df %>% 
+        mutate(comp_bin = case_when(complications == 0 ~ 0,TRUE ~ 1),
+               comp_bin = factor(comp_bin)) 
+```
+
+
+## d) SLR with transformed "total cost" and predictor "ERvisits"
+```{r, echo = F}
+hr_lm1 <-
+        hr_df %>% 
+        lm(log_totalcost ~ e_rvisits, data = .)
+summary(hr_lm1)
+
+hr_slr_pred <- predict.lm(hr_lm1,interval = "confidence")
+
+hr_df %>% 
+        modelr::add_predictions(hr_lm1) %>% 
+        ggplot(aes(x = e_rvisits, y = log_totalcost)) +
+        geom_point() + 
+        geom_smooth(method = "lm",alpha = 0.5) +
+        labs( x = "number of emergency room visits", y = "log(total cost+1)", title = "Linear regression log(total cost+1)~ER visits" )
+```
+
+Therefore, the regression equation is: 
+$$
+\begin{aligned}
+\hat{Y} &= 5.527 +  0.225X\\
+\end{aligned}
+$$
+where $\hat{Y}$ =ln(total cost+1), X = number of ER visits
+
+The estimated slope is `r round(coef(hr_lm1)[[2]], digits = 3)` and it's P-value is 
+it's significant, indicates that if the number of emergency room visits increase by 1 , the log(total cost+1) will increase by 0.225 on avarage. In other word, with the number of emergency room visits increase by 1, the total cost for a patient will increase by 
+`r round((exp(coef(hr_lm1)[[2]])-1) * 100)`% on avarage.
+
+## e) MLR with "comp_bin" and "ERvisits" as predictors
+i) Is "comp_bin" an effect modifier?
+```{r, echo = F}
+hr_df %>% 
+    ggplot(aes(x = e_rvisits, y = log_totalcost, color = comp_bin )) +
+    geom_point(aes(color = comp_bin), alpha = 0.5) +
+    geom_smooth(method = "lm", se = F , size = 1) +
+    labs( x= "number of ER visits" , y = "ln(total cost)" , title = "Scatter plot with overlaid regression lines by complication status" )
+```
+  
+As the plot shows, there are non-parallel slopes for different category of "com_bin", therefore, we can add interaction effects to the model to test. 
+
+```{r}
+hr_lm2 <-
+        hr_df %>% 
+        lm(log_totalcost ~ e_rvisits*comp_bin, data = .)
+summary(hr_lm2)
+```
+
+As the regression model shows, the interaction term is not significant(P-value 0.311). Therefore, we can conclude that "comp_bin" is not an effect modifier of the relationship between "total cost" and "ERvisits".
+
+ii) Is "comp_bin" a confounder?
+```{r, echo = F}
+hr_lm3 <-
+    hr_df %>% 
+    lm(log_totalcost ~ e_rvisits + comp_bin, data = .)
+summary(hr_lm3)
+```
+
+
+Notice that ER visit remains statistically significantly associated with transformed total cost
+(p<0.001), but the magnitude of the association is lower after adjustment.
+(`r round(coef(hr_lm3)[[2]], digits = 3)`  versus `r round(coef(hr_lm1)[[2]], digits = 3)`).
+The regression coefficent decreases by about 10%.
+
+As rule of thumb, "comp_bin" meets the criteria for confounders.
+Thus, "comp_bin"is a confounder of the relationship between "total cost" and "ERvisits".
+
+
+iii) Should "comp_bin" be included along with "ERvisits"?
+```{r}
+anova(hr_lm1,hr_lm3)
+```
+"comp_bin" should be included along with "ERvisits" for two reasons.  
+First, as mentioned in ii), "comp_bin" is a potential confounder and thus need to be adjusted. Second, I compare these two models using partial ANOVA. 
+Since the P-value < 0.05, at a significane level of 0.05, we reject $H_0$, and 
+conclude that the model including "comp_bin" is "superior".  
+Therefore, "comp_bin" should be included along with "ERvisits".
+
+## f)
+i) Fit a new MLR
+```{r}
+hr_lm4 <-
+    hr_df %>% 
+    lm(log_totalcost ~ e_rvisits + comp_bin + age + gender + duration, data = .)
+summary(hr_lm4)
+```
+
+Therefore, the regression equation is: 
+$$
+\begin{aligned}
+\hat{Y} &= 5.940 +  0.175X_1 + 1.504X_2 -0.021X_3 - 0.207X_4+ 0.006X_5\\
+\end{aligned}
+$$
+where $\hat{Y}$ =ln(total cost+1);X1 = number of ER visits; X2 = having complication; X3 = age; X4 = being male; X5 = duration of treatment.
+
+The regression results show that variables of the model, except for 
+gender are all significant associated with of total cost of patients. 
+Holding all other variables constant, if the number of emergency room visits increase by 1, the total cost for a patient will increase by 
+`r round((exp(coef(hr_lm4)[[2]])-1) * 100)`% on avarage. Compared with the coefficient from SLR, the coefficient decrease. 
+
+ii) Compare the SLR and MLR models.
+```{r}
+anova(hr_lm1,hr_lm4)
+```
+
+I would choose the MLR models to address the investigator's objective.
+First, by comparing the two models using partial ANOVA, we can reject $H_0$ and conclude that the MLR model is suprior. 
+
+Second, $R_{adjusted}^2$ of the SLR and the MLR model is 0.097 and 0.265 respectively, which indicates that the MLR model can better explain the variation of the dependent variable. 
+
